@@ -34,7 +34,6 @@ const paginaAutores = () => {
         </div>
       </div>
 
-      {/* Breadcrumbs */}
       <div className="container mx-auto px-6 md:px-12 py-4">
         <div className="flex items-center text-sm">
           <Link
@@ -51,8 +50,8 @@ const paginaAutores = () => {
         </div>
       </div>
       <div className="py-6">
-        <div className="container mx-auto px-4">
-          {/* Search Bar */}
+        {/* <div className="container mx-auto px-4">
+
           <div className="max-w-2xl mx-auto mb-6">
             <div className="flex">
               <div className="relative flex-grow">
@@ -71,7 +70,6 @@ const paginaAutores = () => {
             </div>
           </div>
 
-          {/* Filters */}
           <div className="flex flex-wrap gap-3 justify-center">
             <div className="relative">
               <button className="flex items-center justify-between w-full md:w-auto px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#fa4616]">
@@ -87,12 +85,12 @@ const paginaAutores = () => {
               </button>
             </div>
           </div>
+        </div> */}
           <div className="max-w-6xl mx-auto mb-4">
             <p className="text-gray-600 text-sm">
               Mostrando {data.length} resultados
             </p>
           </div>
-        </div>
 
         <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 max-w-6xl mx-auto mt-8 mb-16">
           {data.map((item: AutorResumen) => (

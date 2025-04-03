@@ -39,23 +39,109 @@ public class AudiolibroService : IAudiolibroService
         listaMapeada.Any() ? HttpStatusCode.OK : HttpStatusCode.NotFound);
     }
 
-    public async Task<BaseMessage<AudiolibroResumen>> AddAudiolibro(AudiolibroResumen AudiolibroModel)
+    public async Task<BaseMessage<AudiolibroCrear>> CreateAudiolibro(AudiolibroCrear audiolibro)
     {
-        var error = new List<string>();
-        if (error.Any())
+        // Verificar que el autor exista
+        var autor = await _unitOfWork.AutorRepository.FindAsync(audiolibro.AutorId);
+        if (autor == null)
         {
-            return BuildMessage<AudiolibroResumen>(null, string.Join(", ", error), HttpStatusCode.BadRequest, 0);
+            return BuildMessage(new List<AudiolibroCrear>(), "Autor no encontrado", HttpStatusCode.NotFound, 0);
         }
-        var audiolibro = _mapper.Map<Audiolibro>(AudiolibroModel);
-        await _unitOfWork.AudiolibroRepository.AddAsync(audiolibro);
+
+        // Verificar que el género exista
+        var genero = await _unitOfWork.GeneroRepository.FindAsync(audiolibro.GeneroId);
+        if (genero == null)
+        {
+            return BuildMessage(new List<AudiolibroCrear>(), "Género no encontrado", HttpStatusCode.NotFound, 0);
+        }
+
+        // Verificar que el archivo sea un .mp3 o un .mp4
+        if (audiolibro.PathArchivo == null || (audiolibro.PathArchivo.ContentType != "audio/mpeg" && audiolibro.PathArchivo.ContentType != "video/mp4"))
+        {
+            return BuildMessage(new List<AudiolibroCrear>(), "El archivo debe ser un .mp3 o un .mp4", HttpStatusCode.BadRequest, 0);
+        }
+
+        // Configurar la ruta de la carpeta para guardar la portada
+        var carpetaPortadas = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "portadasAudio");
+
+        // Verificar si la carpeta existe, si no, crearla
+        if (!Directory.Exists(carpetaPortadas))
+        {
+            Directory.CreateDirectory(carpetaPortadas);
+        }
+
+        // Guardar la portada en la carpeta
+        var nombreArchivo = Guid.NewGuid().ToString() + ".jpg";
+        var rutaArchivoPortada = Path.Combine(carpetaPortadas, nombreArchivo);
+
+        // Convertir la portada de Base64 a un arreglo de bytes
+        var bytesPortada = Convert.FromBase64String(audiolibro.Portada);
+
+        // Guardar la portada en el archivo
+        await File.WriteAllBytesAsync(rutaArchivoPortada, bytesPortada);
+
+        // Configurar la ruta de la carpeta para guardar el archivo de audio o video
+        var carpetaArchivos = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "archivos");
+
+        // Verificar si la carpeta existe, si no, crearla
+        if (!Directory.Exists(carpetaArchivos))
+        {
+            Directory.CreateDirectory(carpetaArchivos);
+        }
+
+        // Guardar el archivo de audio o video en la carpeta
+        var nombreArchivoAudio = Guid.NewGuid().ToString();
+
+        // Determinar la extensión del archivo
+        var extension = audiolibro.PathArchivo.ContentType == "audio/mpeg" ? ".mp3" : ".mp4";
+
+
+        // Agregar la extensión al nombre del archivo
+        nombreArchivoAudio += extension;
+        var rutaArchivoAudio = Path.Combine(carpetaArchivos, nombreArchivoAudio);
+
+        var rutaArchivo = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "archivos", audiolibro.PathArchivo.FileName);
+        // Guardar el archivo de audio o video en el archivo
+        using (var stream = new FileStream(rutaArchivo, FileMode.Create))
+        {
+            await audiolibro.PathArchivo.CopyToAsync(stream);
+        }
+        // Crear un nuevo libro
+        var audiolibroEntity = new Audiolibro
+        {
+            Titulo = audiolibro.Titulo,
+            Duracion = audiolibro.Duracion,
+            TamañoMB = audiolibro.TamañoMB,
+            Narrador = audiolibro.Narrador,
+            Portada = nombreArchivo,
+            PathArchivo = rutaArchivo,
+            Idioma = audiolibro.Idioma,
+        };
+
+        var audioLibroAutor = new AudiolibroAutor
+        {
+            AudiolibroId = audiolibroEntity.id,
+            AutorId = audiolibro.AutorId
+        };
+
+        var audioLibroGenero = new AudiolibroGenero
+        {
+            AudiolibroId = audiolibroEntity.id,
+            GeneroId = audiolibro.GeneroId
+        };
+
+        audiolibroEntity.AudiolibroGeneros.Add(audioLibroGenero);
+
+        audiolibroEntity.AudiolibroAutores.Add(audioLibroAutor);
+
+        // Agregar el audiolibro a la base de datos
+        await _unitOfWork.AudiolibroRepository.AddAsync(audiolibroEntity);
         await _unitOfWork.SaveAsync();
 
-        var audiolibroAgregado = _mapper.Map<AudiolibroResumen>(audiolibro);
+        var audiolibroAgregado = _mapper.Map<AudiolibroCrear>(audiolibroEntity);
 
 
-        return audiolibroAgregado != null
-            ? BuildMessage(new List<AudiolibroResumen> { audiolibroAgregado }, "Audio libro agregado exitosamente.", HttpStatusCode.OK, 1)
-            : BuildMessage(new List<AudiolibroResumen>(), "", HttpStatusCode.InternalServerError, 0);
+        return BuildMessage(new List<AudiolibroCrear> { audiolibroAgregado }, "", HttpStatusCode.OK, 1);
     }
 
     public async Task<BaseMessage<AudiolibroResumen>> UpdateAudiolibro(int id, AudiolibroResumen Audiolibro)
@@ -177,17 +263,22 @@ public class AudiolibroService : IAudiolibroService
             return BuildMessage<byte[]>(null, "No se pudo encontrar el archivo.", HttpStatusCode.NotFound, 0);
         }
 
-        using var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(audiolibro.PathArchivo);
-        if (!response.IsSuccessStatusCode)
+        var rutaArchivo = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "archivos", audiolibro.PathArchivo);
+        var archivo = new FileInfo(rutaArchivo);
+        if (!archivo.Exists)
         {
-            return BuildMessage<byte[]>(null, "No se pudo descargar el archivo.", HttpStatusCode.NotFound, 0);
+            return BuildMessage<byte[]>(null, "No se pudo encontrar el archivo.", HttpStatusCode.NotFound, 0);
         }
 
-        var fileBytes = await response.Content.ReadAsByteArrayAsync();
-        var tipoArchivo = audiolibro.PathArchivo.EndsWith(".mp3") ? "audio/mpeg" : "video/mp4";
+        var extension = archivo.Extension.ToLower();
+        if (extension != ".mp3" && extension != ".mp4")
+        {
+            return BuildMessage<byte[]>(null, "El archivo no es un mp3 o mp4.", HttpStatusCode.BadRequest, 0);
+        }
 
-        return BuildMessage(new List<byte[]> { fileBytes }, tipoArchivo, HttpStatusCode.OK, 0);
+        var bytesArchivo = await File.ReadAllBytesAsync(rutaArchivo);
+        var tipoArchivo = extension == ".mp3" ? "audio/mp3" : "video/mp4";
+        return BuildMessage(new List<byte[]> { bytesArchivo }, tipoArchivo, HttpStatusCode.OK, 0);
     }
     public async Task<bool> RegistrarDescarga(int id)
     {

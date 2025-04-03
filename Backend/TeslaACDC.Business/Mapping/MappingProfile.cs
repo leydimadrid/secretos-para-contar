@@ -12,7 +12,11 @@ public class MappingProfile : Profile
             .ReverseMap();
 
         CreateMap<Libro, LibroResumen>()
-        .ReverseMap();
+            .ReverseMap();
+
+        CreateMap<Audiolibro, AudiolibroCrear>()
+            .ReverseMap();
+
 
         CreateMap<AudiolibroResumen, Audiolibro>()
             .ReverseMap();

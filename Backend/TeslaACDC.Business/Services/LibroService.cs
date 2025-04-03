@@ -90,7 +90,6 @@ public class LibroService : ILibroService
     }
 
 
-
     public async Task<BaseMessage<LibroDetalle>> FindById(int id)
     {
         var libro = await _unitOfWork.LibroRepository.FindAsync(id);
@@ -204,7 +203,6 @@ public class LibroService : ILibroService
             ISBN13 = libro.ISBN13
         };
 
-        // Crea un nuevo objeto LibroAutor y lo agrega a la colección de LibroAutores
         var libroAutor = new LibroAutor
         {
             LibroId = libroEntity.id,
@@ -212,7 +210,6 @@ public class LibroService : ILibroService
         };
         libroEntity.LibroAutores.Add(libroAutor);
 
-        // Crea un nuevo objeto LibroGenero y lo agrega a la colección de LibroGeneros
         var libroGenero = new LibroGenero
         {
             LibroId = libroEntity.id,

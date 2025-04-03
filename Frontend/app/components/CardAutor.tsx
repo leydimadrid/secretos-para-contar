@@ -18,18 +18,18 @@ const CardAutor = ({
     return false;
   };
   return (
-    <div className=" rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:shadow-xl group">
+    <div className="flex flex-col justify-around  rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:shadow-xl group">
       <div className="border-b-2">
         <img
           src={foto}
           alt={`Portada de ${nombre}`}
-          className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+          className="w-64 h-64 transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
       <div className="p-5">
         <div className="space-y-2">
-          <h3 className="font-bold text-lg text-gray-900 line-clamp-2">
+          <h3 className="font-bold text-md text-gray-900 line-clamp-2">
             {`${nombre} ${apellidos}`}
           </h3>
           <div className="flex flex-wrap gap-2">

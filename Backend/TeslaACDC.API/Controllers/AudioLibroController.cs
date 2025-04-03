@@ -37,12 +37,12 @@ namespace TeslaACDC.API.Controllers
             return Ok(audiolibros);
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> AddAudiolibro(AudiolibroResumen audiolibro)
+        public async Task<IActionResult> CreateAudiolibro([FromForm] AudiolibroCrear audiolibro)
         {
-            var nuevoAudiolibro = await _audiolibroService.AddAudiolibro(audiolibro);
+            var nuevoAudiolibro = await _audiolibroService.CreateAudiolibro(audiolibro);
             return Ok(nuevoAudiolibro);
         }
 
@@ -65,24 +65,28 @@ namespace TeslaACDC.API.Controllers
         }
 
         [HttpGet("descargar/{id}")]
-        public async Task<IActionResult> DescargarLibro(int id)
+        public async Task<IActionResult> DescargarAudiolibro(int id)
         {
+
+            // Registrar la descarga
             var registroDescargaExito = await _audiolibroService.RegistrarDescarga(id);
             if (!registroDescargaExito)
             {
                 return NotFound("No se pudo registrar la descarga.");
             }
-
+            
             var resultado = await _audiolibroService.DescargarAudiolibro(id);
-            if (resultado.StatusCode != HttpStatusCode.OK || resultado.ResponseElements == null)
+            if (resultado.StatusCode == HttpStatusCode.NotFound)
             {
                 return NotFound(resultado.Message);
             }
 
-            var fileBytes = resultado.ResponseElements.SelectMany(b => b).ToArray();
-            var tipoArchivo = resultado.Message; // Ahora el tipo de archivo se devuelve en el mensaje
+            var bytesArchivo = resultado.ResponseElements[0];
+            var tipoArchivo = resultado.Message;
+            var extension = tipoArchivo.Split('/')[1];
+            var nombreArchivo = $"Audiolibro_{id}.{extension}";
 
-            return File(fileBytes, tipoArchivo, $"Audiolibro_{id}");
+            return File(bytesArchivo, tipoArchivo, nombreArchivo);
         }
 
     }

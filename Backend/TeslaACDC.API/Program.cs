@@ -165,6 +165,18 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "uploads", "autores")),
     RequestPath = "/autores"
 });
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "portadasAudio")),
+    RequestPath = "/portadasAudio"
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "archivos")),
+    RequestPath = "/archivos"
+});
 app.MapControllers();
 
 app.Run();

@@ -14,7 +14,6 @@ const Libros = () => {
 
   return (
     <div>
-      {/* Hero Banner */}
       <div className="relative w-full h-64 md:h-80 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#002847]/90 to-[#002847]/80 mix-blend-multiply"></div>
         <img
@@ -33,7 +32,6 @@ const Libros = () => {
         </div>
       </div>
 
-      {/* Breadcrumbs */}
       <div className="container mx-auto px-6 md:px-12 py-4">
         <div className="flex items-center text-sm">
           <Link
@@ -51,7 +49,7 @@ const Libros = () => {
       </div>
 
       <div className="py-6">
-        <div className="container mx-auto px-4">
+        {/* <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto mb-6">
             <div className="flex">
               <div className="relative flex-grow">
@@ -70,7 +68,6 @@ const Libros = () => {
             </div>
           </div>
 
-          {/* Filtro de Autor */}
           <div className="flex flex-wrap gap-3 justify-center mb-6">
             <div className="relative autor-dropdown">
               <button className="flex items-center justify-between w-full md:w-auto px-4 py-2 text-sm bg-white border">
@@ -79,13 +76,13 @@ const Libros = () => {
               </button>
             </div>
           </div>
+        </div> */}
 
-          {/* Contador de resultados */}
-          <div className="max-w-6xl mx-auto mb-4">
-            <p className="text-gray-600 text-sm">
-              Mostrando {data.totalElements} resultados
-            </p>
-          </div>
+        {/* Contador de resultados */}
+        <div className="max-w-6xl mx-auto mb-4">
+          <p className="text-gray-600 text-sm">
+            Mostrando {data.totalElements} resultados
+          </p>
         </div>
 
         {/* Resultados */}

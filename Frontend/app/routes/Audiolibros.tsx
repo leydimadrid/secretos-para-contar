@@ -15,7 +15,6 @@ const pagina_Audiolibros = () => {
   return (
     <div>
       <main>
-        {/* Hero Banner */}
         <div className="relative w-full h-64 md:h-80 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#002847]/90 to-[#002847]/80 mix-blend-multiply"></div>
           <img
@@ -25,7 +24,7 @@ const pagina_Audiolibros = () => {
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
-              Audiolibros
+              Audiolibros y videolibros
             </h1>
             <p className="text-lg md:text-xl max-w-2xl text-center text-white/80">
               Descubre historias narradas por las mejores voces y disfruta en
@@ -34,7 +33,6 @@ const pagina_Audiolibros = () => {
           </div>
         </div>
 
-        {/* Breadcrumbs */}
         <div className="container mx-auto px-6 md:px-12 py-4">
           <div className="flex items-center text-sm">
             <Link
@@ -54,7 +52,7 @@ const pagina_Audiolibros = () => {
           </div>
         </div>
 
-        <div className="max-w-2xl mx-auto mb-6">
+        {/* <div className="max-w-2xl mx-auto mb-6">
           <div className="flex">
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -70,13 +68,13 @@ const pagina_Audiolibros = () => {
               Buscar
             </button>
           </div>
-        </div>
+        </div> */}
 
-        <div className="max-w-6xl mx-auto mb-4">
-            <p className="text-gray-600 text-sm">
-              Mostrando {data.responseElements.length} resultados
-            </p>
-          </div>
+        <div className="max-w-6xl mx-auto mb-4 mt-6">
+          <p className="text-gray-600 text-sm">
+            Mostrando {data.responseElements.length} resultados
+          </p>
+        </div>
 
         <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 max-w-6xl mx-auto mt-8 mb-16">
           {data.responseElements.map((item: AudioLibroResumen) => (
@@ -86,11 +84,10 @@ const pagina_Audiolibros = () => {
               titulo={item.titulo}
               autor={item.autor}
               genero={item.genero}
-              portada={""}
+              portada={`http://localhost:5046/portadasAudio/${item.portada}`}
             />
           ))}
         </div>
-
       </main>
     </div>
   );

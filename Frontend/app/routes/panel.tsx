@@ -43,7 +43,6 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-gray-50 mt-8">
-      {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-xl font-bold text-gray-900">
@@ -52,7 +51,6 @@ export default function AdminPanel() {
         </div>
       </header>
 
-      {/* Tab Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
@@ -100,7 +98,6 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      {/* Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* {activeTab === "users" && <UsersPanel usuarios={usuarios} />} */}
         {activeTab === "libros" && <LibrosPanel libros={libros} />}
@@ -183,8 +180,6 @@ function LibrosPanel({ libros }: { libros: Libro[] }) {
           {" "}
           Agregar libro
         </Link>
-        {/* <Button onClick={() => setIsOpen(true)} text={"Agregar libro"} />
-        {isOpen && <AgregarLibro />} */}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

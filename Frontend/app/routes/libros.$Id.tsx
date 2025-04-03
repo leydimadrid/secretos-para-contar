@@ -88,7 +88,7 @@ const LibroDetalle = () => {
         </div>
 
         {/* Book Detail */}
-        <main className="container mx-auto px-6 md:px-12 py-6 flex-grow">
+        <main className="max-w-6xl mx-auto px-6 md:px-12 py-6 flex-grow">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Book Cover */}
             <div className="md:col-span-1 mx-auto shadow-xl">
@@ -158,7 +158,11 @@ const LibroDetalle = () => {
                     </span>
                     <Download className="h-5 w-5 text-gray-500" />
                   </div>
+                  {libro.totalDescargas == 1 ? (
+                  <p className="text-gray-600 text-sm">Vez descargado</p>
+                ) : (
                   <p className="text-gray-600 text-sm">Veces descargado</p>
+                )}
                 </div>
               </div>
             </div>
@@ -176,7 +180,7 @@ const LibroDetalle = () => {
           </div>
 
           {libro.librosRelacionados && libro.librosRelacionados.length > 0 ? (
-            <section className="mt-16">
+            <section className="mt-16 max-w-6xl mx-auto">
               <h2 className="text-2xl font-bold mb-8 text-[#002847]">
                 Libros relacionados
               </h2>

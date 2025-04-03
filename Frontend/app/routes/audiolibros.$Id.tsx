@@ -40,7 +40,7 @@ const audiolibroDetalle = () => {
   }
 
   const audiolibro = response.responseElements[0];
-  const videoUrl = `${audiolibro.urlReproduccion}`;
+  console.log(audiolibro.pathArchivo);
 
   const descargarArchivo = async (idLibro: string) => {
     try {
@@ -79,23 +79,24 @@ const audiolibroDetalle = () => {
       </div>
 
       <main className="container mx-auto min-h-full">
-        <div className="w-full max-w-3xl mx-auto mt-8 mb-16">
-          <audio
-            className="w-full h-full"
-            controls
-            src={videoUrl}
-          >Audio</audio>
-        </div>
-        <div className="w-full max-w-3xl mx-auto mt-8 mb-16">
-          <div className="aspect-video">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="YouTube video"
-              frameBorder="0"
-              allowFullScreen
-            ></iframe>
-          </div>
+        <div className="w-full max-w-3xl mx-auto mb-16">
+          {audiolibro.pathArchivo === "mp3" ? (
+            <audio
+              className="w-full h-7"
+              controls
+              src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
+            >
+              Audio
+            </audio>
+          ) : (
+            <video
+              className="w-full"
+              controls
+              src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
+            >
+              Video
+            </video>
+          )}
         </div>
         <div className="flex flex-col max-w-3xl mx-auto">
           <div className="md:col-span-2">
@@ -130,36 +131,28 @@ const audiolibroDetalle = () => {
             >
               Descargar <Download className="ml-2 h-5 w-5" />
             </button>
-            <button className="bg-[#fa4616] text-white px-6 py-3 rounded-md flex items-center hover:bg-[#f94517] transition-colors">
-              Escuchar <Volume2 className="ml-2 h-5 w-5" />
-            </button>
           </div>
           <div>
-            <div className="grid grid-cols-2 text-center">
-              <div>
+            <div className="flex justify-center text-center">
+              <div className="flex flex-col">
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-2xl font-bold">
                     {audiolibro.totalDescargas}
                   </span>
                   <Download className="h-5 w-5 text-gray-500" />
                 </div>
-                <p className="text-gray-600 text-sm">Veces descargado</p>
-              </div>
-              <div>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-2xl font-bold">
-                    {audiolibro.totalEscuchas}
-                  </span>
-                  <Volume2 className="h-5 w-5 text-gray-500" />
-                </div>
-                <p className="text-gray-600 text-sm">Veces reproducido</p>
+                {audiolibro.totalDescargas == 1 ? (
+                  <p className="text-gray-600 text-sm">Vez descargado</p>
+                ) : (
+                  <p className="text-gray-600 text-sm">Veces descargado</p>
+                )}
               </div>
             </div>
           </div>
         </div>
         {audiolibro.audiolibrosRelacionados &&
         audiolibro.audiolibrosRelacionados.length > 0 ? (
-          <section className="mt-16">
+          <section className="mt-16 max-w-6xl mx-auto mb-8">
             <h2 className="text-2xl font-bold mb-8 text-[#002847]">
               Audiolibros relacionados
             </h2>
@@ -170,7 +163,7 @@ const audiolibroDetalle = () => {
                     key={audiolibroRelacionado.id}
                     id={audiolibroRelacionado.id}
                     titulo={audiolibroRelacionado.titulo}
-                    portada={"img/image-audio.jpg"}
+                    portada={`http://localhost:5046/portadasAudio/${audiolibroRelacionado.portada}`}
                     autor={audiolibroRelacionado.autor}
                     genero={audiolibroRelacionado.genero}
                   />

@@ -19,18 +19,18 @@ const CardAudiolibro = ({
     return false;
   };
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:shadow-xl group">
+    <div className="flex flex-col justify-around rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:shadow-xl group">
       <div className="border-b-2">
         <img
           src={portada || "/img/image-audio.jpg"}
           alt={`Portada de ${titulo}`}
-          className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+          className="w-64 h-32 transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
       <div className="p-5 flex flex-col gap-4">
         <div className="space-y-2">
-          <h3 className="font-bold text-lg text-gray-900 line-clamp-2">
+          <h3 className="font-bold text-md text-gray-900 line-clamp-2">
             {titulo}
           </h3>
           <p className="text-sm font-medium text-gray-500">{autor}</p>
