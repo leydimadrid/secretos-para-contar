@@ -4,10 +4,11 @@ import { type ActionFunction, json, redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ImageToBase64 } from "~/components/Base64Util";
-import { Genero } from "~/models/Genero";
+import type { AutorResumen } from "~/models/Autor";
+import type { Genero } from "~/models/Genero";
+import { getAllAutores } from "~/services/autorservice";
 import { getAllGeneros } from "~/services/generoservice";
-
-import { crearAutor } from "~/services/autorservice";
+import { crearAudiolibro } from "~/services/audiolibroservice";
 
 // Definir el tipo para los errores
 type ActionData = {
@@ -35,43 +36,54 @@ export const action: ActionFunction = async ({ request }) => {
 
     console.log("Datos del formulario:", debugFormData);
 
-    // Crear un objeto con los datos del autor
-    const autorData = {
-      Nombre: formData.get("nombre") as string,
-      Apellido: formData.get("apellido") as string,
+    // Crear un objeto con los datos del libro
+    const audiolibroData = {
+      Titulo: formData.get("titulo") as string,
+      AutorId: Number.parseInt(formData.get("autorId") as string) || 0,
       GeneroId: Number.parseInt(formData.get("generoId") as string) || 0,
-      Foto: (formData.get("foto") as string) || "",
-      Nacionalidad: (formData.get("nacionalidad") as string) || "",
-      Biografia: formData.get("biografia") as string,
+      Duracion: formData.get("duracion") as string,
+      Portada: (formData.get("portada") as string) || "",
+      TamañoMB: (formData.get("tamaño_m_b") as string) || "",
+      Narrador: formData.get("narrador") as string,
       Idioma: (formData.get("idioma") as string) || "",
     };
 
     // Validar datos requeridos
     const errores: Record<string, string> = {};
-    if (!autorData.Nombre) errores["nombre"] = "El nombre es requerido";
-    if (!autorData.Apellido) errores["apellido"] = "El apellido es requerido";
-    if (!autorData.GeneroId) errores["generoId"] = "Debe seleccionar un género";
-    if (!autorData.Nacionalidad)
-      errores["nacionalidad"] = "La nacionalidad es requerida";
-    if (!autorData.Biografia)
-      errores["biografia"] = "La biografía es requerida";
-    if (!autorData.Idioma) errores["idioma"] = "El idioma es requerido";
+    if (!audiolibroData.Titulo) errores["titulo"] = "El título es requerido";
+    if (!audiolibroData.AutorId)
+      errores["autorId"] = "Debe seleccionar un autor";
+    if (!audiolibroData.GeneroId)
+      errores["generoId"] = "Debe seleccionar un género";
+    if (!audiolibroData.Duracion)
+      errores["duracion"] = "La duracion es requerida";
+    if (!audiolibroData.TamañoMB)
+      errores["tamanomb"] = "El Tamaño es requerido";
+    if (!audiolibroData.Narrador)
+      errores["narrador"] = "El narrador es requerido";
+    if (!audiolibroData.Idioma) errores["idioma"] = "El idioma es requerido";
 
     if (Object.keys(errores).length > 0) {
       return json<ActionData>({ errores }, { status: 400 });
     }
 
     // Crear un nuevo FormData para enviar al backend
-    const nuevoAutor = new FormData();
+    const nuevoAudiolibro = new FormData();
 
     // Agregar los campos de texto al FormData
-    Object.entries(autorData).forEach(([key, value]) => {
+    Object.entries(audiolibroData).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        nuevoAutor.append(key, String(value));
+        nuevoAudiolibro.append(key, String(value));
       }
     });
 
-    const resultado = await crearAutor(nuevoAutor);
+    // Agregar el archivo si existe
+    const archivo = formData.get("pathArchivo") as File;
+    if (archivo && archivo.size > 0) {
+      nuevoAudiolibro.append("pathArchivo", archivo);
+    }
+
+    const resultado = await crearAudiolibro(nuevoAudiolibro);
     console.log("Respuesta del backend:", resultado);
 
     if (resultado.error) {
@@ -98,18 +110,28 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export default function AgregarAutor() {
+export default function AgregarAudiolibro() {
   const navigate = useNavigate();
+
   const actionData = useActionData<ActionData>();
+  const [autores, setAutores] = useState<AutorResumen[]>([]);
   const [generos, setGeneros] = useState<Genero[]>([]);
   const [bookCoverBase64, setBookCoverBase64] = useState<string | null>(null);
+  const [archivo, setArchivo] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleArchivoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setArchivo(file);
+  };
+
   useEffect(() => {
-    // Obtener los géneros al cargar el componente
+    // Obtener los autores y géneros al cargar el componente
     const fetchData = async () => {
       try {
+        const autoresData = await getAllAutores();
         const generosData = await getAllGeneros();
+        setAutores(autoresData);
         setGeneros(generosData);
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -127,16 +149,17 @@ export default function AgregarAutor() {
     setIsSubmitting(true);
     navigate("/panel");
   };
+
   return (
     <div>
       <div className="container rounded-lg max-w-6xl mx-auto mt-7 mb-7">
         <div className="flex justify-between ml-40 items-center">
           <div>
             <h2 className="text-xl font-bold text-[#002847]">
-              Agregar nuevo autor
+              Agregar nuevo audiolibro
             </h2>
             <p className="text-gray-500 text-sm mt-1">
-              Complete los detalles del autor y suba los archivos necesarios
+              Complete los detalles del audiolibro y suba los archivos necesarios
             </p>
           </div>
         </div>
@@ -167,23 +190,23 @@ export default function AgregarAutor() {
           <div className="grid gap-6">
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
               <label className="text-right font-medium text-gray-700">
-                Nombre
+                Título
               </label>
               <div>
                 <input
                   type="text"
-                  name="nombre"
-                  placeholder="Ingrese el nombre"
+                  name="titulo"
+                  placeholder="Ingrese el título"
                   className={`w-full px-3 py-2 border ${
-                    actionData?.errores?.nombre
+                    actionData?.errores?.titulo
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded`}
                   required
                 />
-                {actionData?.errores?.nombre && (
+                {actionData?.errores?.titulo && (
                   <p className="text-red-500 text-sm mt-1">
-                    {actionData.errores.nombre}
+                    {actionData.errores.titulo}
                   </p>
                 )}
               </div>
@@ -191,23 +214,28 @@ export default function AgregarAutor() {
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
               <label className="text-right font-medium text-gray-700">
-                Apellido
+                Autor
               </label>
               <div>
-                <input
-                  type="text"
-                  name="apellido"
-                  placeholder="Ingrese el apellido"
+                <select
+                  name="autorId"
                   className={`w-full px-3 py-2 border ${
-                    actionData?.errores?.apellido
+                    actionData?.errores?.autorId
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded`}
                   required
-                />
-                {actionData?.errores?.apellido && (
+                >
+                  <option value="">Seleccione un autor</option>
+                  {autores.map((autor: AutorResumen) => (
+                    <option key={autor.id} value={autor.id}>
+                      {autor.nombre} {autor.apellidos}
+                    </option>
+                  ))}
+                </select>
+                {actionData?.errores?.autorId && (
                   <p className="text-red-500 text-sm mt-1">
-                    {actionData.errores.apellido}
+                    {actionData.errores.autorId}
                   </p>
                 )}
               </div>
@@ -244,23 +272,23 @@ export default function AgregarAutor() {
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
               <label className="text-right font-medium text-gray-700">
-                Nacionalidad
+                Duracion
               </label>
               <div>
                 <input
                   type="text"
-                  name="nacionalidad"
-                  placeholder="Ingrese la nacionalidad"
+                  name="duracion"
+                  placeholder="Ingrese la duración"
                   className={`w-full px-3 py-2 border ${
-                    actionData?.errores?.nacionalidad
+                    actionData?.errores?.duracion
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded`}
                   required
                 />
-                {actionData?.errores?.nacionalidad && (
+                {actionData?.errores?.duracion && (
                   <p className="text-red-500 text-sm mt-1">
-                    {actionData.errores.nacionalidad}
+                    {actionData.errores.duracion}
                   </p>
                 )}
               </div>
@@ -268,11 +296,11 @@ export default function AgregarAutor() {
 
             <div className="grid grid-cols-[120px,1fr] items-start gap-4">
               <label className="text-right font-medium text-gray-700 pt-2">
-                Biografía
+                Tamaño MB
               </label>
               <textarea
-                name="biografia"
-                placeholder="Ingrese la biografía"
+                name="tamaño_m_b"
+                placeholder="Ingrese el tamaño"
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded resize-none"
               />
@@ -289,11 +317,54 @@ export default function AgregarAutor() {
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
             </div>
-            
+
+            <div className="grid grid-cols-[120px,1fr] items-center gap-4">
+              <label className="text-right font-medium text-gray-700">
+                Narrador
+              </label>
+              <div>
+                <input
+                  type="text"
+                  name="narrador"
+                  placeholder="Ingrese el narrador"
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.narrador
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
+                  required
+                />
+                {actionData?.errores?.isnarradorbn && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.narrador}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-[120px,1fr] items-center gap-4">
+              <label
+                htmlFor="pdf"
+                className="text-right font-medium text-gray-700"
+              >
+                Audio o video
+              </label>
+              <div className="flex">
+                <input
+                  type="file"
+                  id="pathArchivo"
+                  name="pathArchivo"
+                  accept=".mp3, .mp4"
+                  required
+                  onChange={handleArchivoChange}
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col items-center my-10">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Foto del autor
-            </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Portada del audiolibro
+              </label>
               <ImageToBase64
                 onBase64Generated={handleBase64Generated}
                 stripPrefix={true}
@@ -306,13 +377,17 @@ export default function AgregarAutor() {
                         ? bookCoverBase64
                         : `data:image/jpeg;base64,${bookCoverBase64}`
                     }
-                    alt="foto"
+                    alt="Portada"
                     className="rounded-3xl border"
                   />
                 </div>
               )}
 
-              <input type="hidden" name="foto" value={bookCoverBase64 || ""} />
+              <input
+                type="hidden"
+                name="portada"
+                value={bookCoverBase64 || ""}
+              />
             </div>
           </div>
 

@@ -16,10 +16,10 @@ namespace TeslaACDC.API.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("usuarios")]
-        public async Task<IActionResult> GetAllUsuarios()
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetAllUsuarios()
         {
             var usuarios = await _userService.GetAllUsuarios();
             return Ok(usuarios);

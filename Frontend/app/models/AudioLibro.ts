@@ -20,3 +20,15 @@ export interface AudioLibroResponse {
   totalElements: number;
   responseElements: AudioLibro[];
 }
+
+export interface AudiolibroCrear {
+  titulo: string;
+  autorId: string;
+  generoId: string;
+  duracion: string;
+  portada: string;
+  tamañoMB: string;
+  narrador: string;
+  idioma: string;
+  pathArchivo: string;
+}

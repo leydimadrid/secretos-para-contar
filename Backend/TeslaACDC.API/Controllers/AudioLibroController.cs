@@ -46,7 +46,7 @@ namespace TeslaACDC.API.Controllers
             return Ok(nuevoAudiolibro);
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("Update/{id}")]
         public async Task<IActionResult> UpdateAudiolibro(int id, [FromForm] AudiolibroCrear audiolibro)
@@ -55,7 +55,7 @@ namespace TeslaACDC.API.Controllers
             return Ok(updatedAudiolibro);
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("Delete/{id}")]
         public async Task<IActionResult> DeleteAudiolibro(int id)
@@ -67,14 +67,13 @@ namespace TeslaACDC.API.Controllers
         [HttpGet("descargar/{id}")]
         public async Task<IActionResult> DescargarAudiolibro(int id)
         {
-
             // Registrar la descarga
             var registroDescargaExito = await _audiolibroService.RegistrarDescarga(id);
             if (!registroDescargaExito)
             {
                 return NotFound("No se pudo registrar la descarga.");
             }
-            
+
             var resultado = await _audiolibroService.DescargarAudiolibro(id);
             if (resultado.StatusCode == HttpStatusCode.NotFound)
             {

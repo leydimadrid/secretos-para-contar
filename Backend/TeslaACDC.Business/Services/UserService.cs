@@ -32,23 +32,23 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
-    public async Task<BaseMessage<UserModel>> GetAllUsuarios()
+    public async Task<BaseMessage<IEnumerable<UserModel>>> GetAllUsuarios()
     {
         var lista = await _unitOfWork.UserRepository.GetAllAsync();
         var listaMapeada = _mapper.Map<List<UserModel>>(lista);
 
-        return lista.Any()
-            ? BuildMessage(listaMapeada.ToList(), "", HttpStatusCode.OK, lista.Count())
-            : BuildMessage(listaMapeada.ToList(), "", HttpStatusCode.NotFound, 0);
+        if (listaMapeada.Count == 1)
+        {
+            return BuildMessage(new List<UserModel> { listaMapeada.First() }, "", HttpStatusCode.OK, 1);
+        }
+        else
+        {
+            return BuildMessage(listaMapeada, "", HttpStatusCode.OK, listaMapeada.Count());
+        }
     }
 
-    public async Task<BaseMessage<UserModel>> UpdateUsuario(string id, UserModel userModel)
+    public async Task<BaseMessage<IEnumerable<UserModel>>> UpdateUsuario(string id, UserModel userModel)
     {
-        var error = new List<string>();
-        if (error.Any())
-        {
-            return BuildMessage(null, string.Join(", ", error), HttpStatusCode.BadRequest, 0);
-        }
         var userEntity = await _unitOfWork.UserRepository.FindAsync(id);
         if (userEntity == null)
         {
@@ -67,7 +67,7 @@ public class UserService : IUserService
         return BuildMessage(new List<UserModel> { usuarioActualizado }, "", HttpStatusCode.OK, 1);
     }
 
-    public async Task<BaseMessage<UserModel>> DeleteUsuario(string id)
+    public async Task<BaseMessage<IEnumerable<UserModel>>> DeleteUsuario(string id)
     {
         var usuario = await _unitOfWork.UserRepository.FindAsync(id);
         if (usuario == null)
@@ -197,15 +197,15 @@ public class UserService : IUserService
         return true;
     }
 
-    private BaseMessage<UserModel> BuildMessage(List<UserModel> responseElements, string message = "", HttpStatusCode
+    private BaseMessage<IEnumerable<UserModel>> BuildMessage(List<UserModel> responseElements, string message = "", HttpStatusCode
         statusCode = HttpStatusCode.OK, int totalElements = 0)
     {
-        return new BaseMessage<UserModel>()
+        return new BaseMessage<IEnumerable<UserModel>>()
         {
             Message = message,
             StatusCode = statusCode,
             TotalElements = totalElements,
-            ResponseElements = responseElements
+            ResponseElements = new List<IEnumerable<UserModel>> { responseElements }
         };
     }
 }

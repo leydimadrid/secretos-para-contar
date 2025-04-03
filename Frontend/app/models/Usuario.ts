@@ -5,3 +5,10 @@ export interface Usuario {
   userName: string;
   email: string;
 }
+
+export interface UsuarioResponse {
+  message: string;
+  statusCode: number;
+  totalElements: number;
+  responseElements: Usuario[];
+}

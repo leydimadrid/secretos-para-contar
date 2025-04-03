@@ -8,8 +8,9 @@ export async function getAllUsuarios() {
       throw new Error("Error al obtener los usuarios");
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data.responseElements || [];
   } catch (error) {
-    console.error("Error en getAllUsers:", error);
+    console.error("Error en getAllUsuarios:", error);
   }
 }

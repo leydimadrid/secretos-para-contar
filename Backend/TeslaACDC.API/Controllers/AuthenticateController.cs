@@ -33,6 +33,8 @@ public class AuthenticateController : ControllerBase
         }
         return Unauthorized();
     }
+
+    
     [HttpPost("register/admin")]
     public async Task<IActionResult> RegisterAdmin(RegisterModel registerModel)
     {

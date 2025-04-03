@@ -7,7 +7,7 @@ import { Form, useActionData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ImageToBase64 } from "~/components/Base64Util";
 import type { AutorResumen } from "~/models/Autor";
-import type { Genero } from "~/models/Libro";
+import type { Genero } from "~/models/Genero";
 import { getAllAutores } from "~/services/autorservice";
 import { getAllGeneros } from "~/services/generoservice";
 import { crearLibro } from "~/services/libroservice";

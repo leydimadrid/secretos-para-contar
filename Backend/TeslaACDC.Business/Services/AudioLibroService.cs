@@ -114,7 +114,7 @@ public class AudiolibroService : IAudiolibroService
             TamañoMB = audiolibro.TamañoMB,
             Narrador = audiolibro.Narrador,
             Portada = nombreArchivo,
-            PathArchivo = rutaArchivo,
+            PathArchivo = Path.GetFileName(rutaArchivo),
             Idioma = audiolibro.Idioma,
         };
 

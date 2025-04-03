@@ -2,7 +2,6 @@
 
 import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import Button from "~/components/Button";
 import { AudioLibro } from "~/models/AudioLibro";
 import { Autor } from "~/models/Autor";
 import { Libro } from "~/models/Libro";
@@ -10,17 +9,13 @@ import { Usuario } from "~/models/Usuario";
 import { getAllAudiolibros } from "~/services/audiolibroservice";
 import { getAllAutores } from "~/services/autorservice";
 import { getAllLibros } from "~/services/libroservice";
-import { getAllUsuarios } from "~/services/userService";
-import AgregarLibro from "./agregarlibro";
-import EditarLibro from "./editarlibro.$id";
-import EliminarLibro from "./eliminarlibro.$id";
+import { getAllUsuarios } from "~/services/userservice";
 
 export async function loader() {
   const response = await getAllLibros();
   const libros = response.responseElements;
 
-  //   const usuariosResponse = await getAllUsuarios();
-  //   const usuarios = usuariosResponse.responseElements;
+  // const usuariosResponse = await getAllUsuarios();
 
   const autoresResponse = await getAllAutores();
 
@@ -29,7 +24,7 @@ export async function loader() {
 
   return {
     libros,
-    // usuarios,
+    // usuariosResponse,
     autoresResponse,
     audiolibros,
   };
@@ -38,7 +33,6 @@ export async function loader() {
 export default function AdminPanel() {
   const { libros, audiolibros, autoresResponse } =
     useLoaderData<typeof loader>();
-
   const [activeTab, setActiveTab] = useState("libros");
 
   return (
@@ -99,7 +93,9 @@ export default function AdminPanel() {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* {activeTab === "users" && <UsersPanel usuarios={usuarios} />} */}
+        {/* {activeTab === "usuarios" && (
+          <UsuariosPanel usuarios={usuariosResponse} />
+        )} */}
         {activeTab === "libros" && <LibrosPanel libros={libros} />}
         {activeTab === "audiolibros" && (
           <AudiolibrosPanel audiolibros={audiolibros} />
@@ -131,6 +127,12 @@ function UsuariosPanel({ usuarios }: { usuarios: Usuario[] }) {
                 Nombre
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Apellido
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Username
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -141,11 +143,14 @@ function UsuariosPanel({ usuarios }: { usuarios: Usuario[] }) {
           <tbody className="bg-white divide-y divide-gray-200">
             {usuarios.map((user) => (
               <tr key={user.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.id}
-                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {user.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {user.lastName}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {user.userName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {user.email}
@@ -227,9 +232,13 @@ function AudiolibrosPanel({ audiolibros }: { audiolibros: AudioLibro[] }) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-medium text-gray-900">Audiolibros</h2>
-        <button className="bg-[#002847] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#001247]">
-          Añadir Audiolibro
-        </button>
+        <Link
+          className="bg-[#002847] text-white px-4 py-2 rounded flex items-center"
+          to="/agregaraudiolibro"
+        >
+          {" "}
+          Agregar audiolibro
+        </Link>
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -258,12 +267,18 @@ function AudiolibrosPanel({ audiolibros }: { audiolibros: AudioLibro[] }) {
                   </div>
                 </div>
                 <div className="mt-3 flex justify-end">
-                  <button className="text-[#002847] hover:text-blue-900 text-sm font-medium mr-4">
+                  <Link
+                    to={`/editaraudioLibro/${audiobook.id}`}
+                    className="text-[#002847] hover:text-blue-900 text-sm font-medium mr-4"
+                  >
                     Editar
-                  </button>
-                  <button className="text-red-600 hover:text-red-900 text-sm font-medium">
+                  </Link>
+                  <Link
+                    to={`/eliminaraudioLibro/${audiobook.id}`}
+                    className="text-red-600 hover:text-red-900 text-sm font-medium"
+                  >
                     Eliminar
-                  </button>
+                  </Link>
                 </div>
               </div>
             </li>

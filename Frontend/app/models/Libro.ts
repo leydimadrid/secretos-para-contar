@@ -40,7 +40,6 @@ export interface EditarLibro {
 }
 
 
-
 export interface LibroFiltro {
   autorId?: number;
   generoId?: number;
@@ -49,20 +48,3 @@ export interface LibroFiltro {
   busqueda?: string;
 }
 
-export interface Autor {
-  id: number;
-  nombre: string;
-}
-
-export interface Genero {
-  id: number;
-  nombre: string;
-}
-
-export interface Editorial {
-  nombre: string;
-}
-
-export interface AnioPublicacion {
-  anio: number;
-}

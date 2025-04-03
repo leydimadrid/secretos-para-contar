@@ -12,7 +12,7 @@ public interface IUserService
     Task<TokenResponse> Login(LoginModel loginModel);
 
     // Métodos de gestión de usuarios (CRUD)
-    public Task<BaseMessage<UserModel>> GetAllUsuarios();
-    public Task<BaseMessage<UserModel>> UpdateUsuario(string id, UserModel userModel);
-    public Task<BaseMessage<UserModel>> DeleteUsuario(string id);
+    public Task<BaseMessage<IEnumerable<UserModel>>> GetAllUsuarios();
+    public Task<BaseMessage<IEnumerable<UserModel>>> UpdateUsuario(string id, UserModel userModel);
+    public Task<BaseMessage<IEnumerable<UserModel>>> DeleteUsuario(string id);
 }
