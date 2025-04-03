@@ -6,7 +6,12 @@ import {
   type LoaderFunction,
   redirect,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ImageToBase64 } from "~/components/Base64Util";
 import type { AutorResumen } from "~/models/Autor";
@@ -14,7 +19,6 @@ import type { EditarLibro } from "~/models/Libro";
 import type { Genero } from "~/models/Genero";
 import { getAllAutores } from "~/services/autorservice";
 import { getAllGeneros } from "~/services/generoservice";
-import { getLibroById, actualizarLibro } from "~/services/libroservice";
 import {
   actualizarAudiolibro,
   getAudiolibroById,
@@ -36,11 +40,11 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 
   try {
-    const libro = await getAudiolibroById(id.toString());
-    if (!libro) {
+    const audiolibro = await getAudiolibroById(id.toString());
+    if (!audiolibro) {
       throw new Error("Audiolibro no encontrado");
     }
-    return json({ libro });
+    return json({ audiolibro });
   } catch (error) {
     console.error("Error al cargar el audiolibro:", error);
     return json({ error: "No se pudo cargar el audiolibro" }, { status: 404 });
@@ -156,6 +160,9 @@ export default function EditarAudiolibro() {
     audiolibro: AudiolibroCrear;
     error?: string;
   }>();
+
+  console.log(audiolibro)
+
   const actionData = useActionData<ActionData>();
   const [autores, setAutores] = useState<AutorResumen[]>([]);
   const [generos, setGeneros] = useState<Genero[]>([]);
@@ -188,6 +195,7 @@ export default function EditarAudiolibro() {
       setBookCoverBase64(audiolibro.portada);
     }
   }, [audiolibro]);
+
 
   const handleBase64Generated = (base64: string) => {
     setBookCoverBase64(base64);
@@ -242,7 +250,7 @@ export default function EditarAudiolibro() {
                 <input
                   type="text"
                   name="titulo"
-                  placeholder="Ingrese el título"
+                  defaultValue={audiolibro.titulo}
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.titulo
                       ? "border-red-500"
@@ -265,6 +273,7 @@ export default function EditarAudiolibro() {
               <div>
                 <select
                   name="autorId"
+                  defaultValue={audiolibro.autorId}
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.autorId
                       ? "border-red-500"

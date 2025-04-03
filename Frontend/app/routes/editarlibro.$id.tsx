@@ -231,7 +231,6 @@ export default function EditarLibro() {
                   type="text"
                   name="titulo"
                   defaultValue={libro?.titulo || ""}
-                  placeholder="Ingrese el título"
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.titulo
                       ? "border-red-500"

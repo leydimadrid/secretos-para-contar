@@ -10,7 +10,8 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ImageToBase64 } from "~/components/Base64Util";
 import type { AutorCrear, AutorResumen } from "~/models/Autor";
-import type { EditarLibro, Genero, Libro } from "~/models/Libro";
+import type { EditarLibro, Libro } from "~/models/Libro";
+import type { Genero} from "~/models/Genero";
 import { getAllGeneros } from "~/services/generoservice";
 import { actualizarLibro } from "~/services/libroservice";
 import { actualizarAutor, getAutorById } from "~/services/autorservice";
@@ -212,7 +213,7 @@ export default function EditarAutor() {
                 <input
                   type="text"
                   name="nombre"
-                  defaultValue={autor?.nombre || ""}
+                  defaultValue={autor?.nombre}
                   placeholder="Ingrese el nombre"
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.nombre
