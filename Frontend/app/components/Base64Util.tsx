@@ -116,9 +116,6 @@ export const ImageToBase64 = ({
 
   return (
     <div className="w-full max-w-md">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Portada del libro
-      </label>
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="portada-upload"
@@ -176,8 +173,7 @@ export const ImageToBase64 = ({
                 ></path>
               </svg>
               <p className="mb-2 text-sm text-gray-500">
-                <span className="font-semibold">Haga clic para cargar</span> o
-                arrastre y suelte
+                <span className="font-semibold">Haga clic para cargar</span>
               </p>
               <p className="text-xs text-gray-500">
                 PNG, JPG o JPEG (MAX. 2MB)

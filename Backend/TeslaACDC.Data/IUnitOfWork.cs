@@ -19,6 +19,9 @@ public interface IUnitOfWork
     // Tablas intermedias
     IRepository<int, LibroAutor> LibroAutorRepository { get; }
     IRepository<int, LibroGenero> LibroGeneroRepository { get; }
+    IRepository<int, AudiolibroAutor> AudiolibroAutorRepository { get; }
+    IRepository<int, AudiolibroGenero> AudiolibroGeneroRepository { get; }
+    IRepository<int, AutorGenero> AutorGeneroRepository { get; }
 
 
     Task SaveAsync();

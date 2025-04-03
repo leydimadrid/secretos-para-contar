@@ -289,8 +289,11 @@ export default function AgregarAutor() {
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
             </div>
-
+            
             <div className="flex flex-col items-center my-10">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Foto del autor
+            </label>
               <ImageToBase64
                 onBase64Generated={handleBase64Generated}
                 stripPrefix={true}
@@ -309,11 +312,7 @@ export default function AgregarAutor() {
                 </div>
               )}
 
-              <input
-                type="hidden"
-                name="foto"
-                value={bookCoverBase64 || ""}
-              />
+              <input type="hidden" name="foto" value={bookCoverBase64 || ""} />
             </div>
           </div>
 

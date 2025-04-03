@@ -144,28 +144,99 @@ public class AudiolibroService : IAudiolibroService
         return BuildMessage(new List<AudiolibroCrear> { audiolibroAgregado }, "", HttpStatusCode.OK, 1);
     }
 
-    public async Task<BaseMessage<AudiolibroResumen>> UpdateAudiolibro(int id, AudiolibroResumen Audiolibro)
+    public async Task<BaseMessage<AudiolibroCrear>> UpdateAudiolibro(int id, AudiolibroCrear audiolibro)
     {
-        var error = new List<string>();
-        if (error.Any())
-        {
-            return BuildMessage<AudiolibroResumen>(null, string.Join(", ", error), HttpStatusCode.BadRequest, 0);
-        }
-
         var AudiolibroEntity = await _unitOfWork.AudiolibroRepository.FindAsync(id);
         if (AudiolibroEntity == null)
         {
-            return BuildMessage(new List<AudiolibroResumen>(), "Audio libro no encontrado", HttpStatusCode.NotFound, 0);
+            return BuildMessage(new List<AudiolibroCrear>(), "Audio libro no encontrado", HttpStatusCode.NotFound, 0);
         }
 
-        _mapper.Map(Audiolibro, AudiolibroEntity);
+        AudiolibroEntity.Titulo = audiolibro.Titulo;
+        AudiolibroEntity.Duracion = audiolibro.Duracion;
+        AudiolibroEntity.TamañoMB = audiolibro.TamañoMB;
+        AudiolibroEntity.Narrador = audiolibro.Narrador;
+        AudiolibroEntity.Idioma = audiolibro.Idioma;
+
+        // Eliminar las relaciones existentes de autor y género
+        var autoresAntiguos = await _unitOfWork.AudiolibroAutorRepository.GetAllAsync(la => la.AudiolibroId == id);
+        var generosAntiguos = await _unitOfWork.AudiolibroGeneroRepository.GetAllAsync(lg => lg.AudiolibroId == id);
+
+        foreach (var autorAntiguo in autoresAntiguos)
+        {
+            _unitOfWork.AudiolibroAutorRepository.Delete(autorAntiguo);
+        }
+
+        foreach (var generoAntiguo in generosAntiguos)
+        {
+            _unitOfWork.AudiolibroGeneroRepository.Delete(generoAntiguo);
+        }
+
+        // Agregar las nuevas relaciones de autor y género
+        if (audiolibro.AutorId != 0)
+        {
+            var autor = await _unitOfWork.AutorRepository.FindAsync(audiolibro.AutorId);
+            if (autor != null)
+            {
+                var audiolibroAutor = new AudiolibroAutor
+                {
+                    AudiolibroId = AudiolibroEntity.id,
+                    AutorId = autor.id
+                };
+                _unitOfWork.AudiolibroAutorRepository.AddAsync(audiolibroAutor);
+            }
+        }
+
+        if (audiolibro.GeneroId != 0)
+        {
+            var genero = await _unitOfWork.GeneroRepository.FindAsync(audiolibro.GeneroId);
+            if (genero != null)
+            {
+                var audiolibroGenero = new AudiolibroGenero
+                {
+                    AudiolibroId = AudiolibroEntity.id,
+                    GeneroId = genero.id
+                };
+                _unitOfWork.AudiolibroGeneroRepository.AddAsync(audiolibroGenero);
+            }
+        }
+
+        // Actualizar la portada y el archivo si es necesario
+        if (!string.IsNullOrEmpty(audiolibro.Portada))
+        {
+            var carpetaPortadas = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "portadasAudio");
+            if (!Directory.Exists(carpetaPortadas))
+            {
+                Directory.CreateDirectory(carpetaPortadas);
+            }
+
+            var nombreArchivo = Guid.NewGuid().ToString() + ".jpg";
+            var rutaArchivoPortada = Path.Combine(carpetaPortadas, nombreArchivo);
+
+            var bytesPortada = Convert.FromBase64String(audiolibro.Portada);
+            await File.WriteAllBytesAsync(rutaArchivoPortada, bytesPortada);
+
+            AudiolibroEntity.Portada = nombreArchivo;
+        }
+
+        if (audiolibro.PathArchivo != null)
+        {
+            var rutaArchivo = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audiolibros", "archivos", audiolibro.PathArchivo.FileName);
+            using (var stream = new FileStream(rutaArchivo, FileMode.Create))
+            {
+                await audiolibro.PathArchivo.CopyToAsync(stream);
+            }
+
+            AudiolibroEntity.PathArchivo = audiolibro.PathArchivo.FileName;
+        }
+
 
         _unitOfWork.AudiolibroRepository.Update(AudiolibroEntity);
         await _unitOfWork.SaveAsync();
 
-        var audiolibroActualizado = _mapper.Map<AudiolibroResumen>(AudiolibroEntity);
+        var audiolibroActualizado = _mapper.Map<AudiolibroCrear>(AudiolibroEntity);
 
-        return BuildMessage(new List<AudiolibroResumen> { audiolibroActualizado }, "", HttpStatusCode.OK, 1);
+        return BuildMessage(new List<AudiolibroCrear> { audiolibroActualizado }, "", HttpStatusCode.OK, 1);
 
     }
 
@@ -227,20 +298,20 @@ public class AudiolibroService : IAudiolibroService
         return BuildMessage(resultado, "", HttpStatusCode.OK, 1);
     }
 
-    public async Task<BaseMessage<AudiolibroResumen>> DeleteAudiolibro(int id)
+    public async Task<BaseMessage<AudiolibroCrear>> DeleteAudiolibro(int id)
     {
         var audiolibro = await _unitOfWork.AudiolibroRepository.FindAsync(id);
         if (audiolibro == null)
         {
-            return BuildMessage(new List<AudiolibroResumen>(), "Audio libro no encontrado", HttpStatusCode.NotFound, 0);
+            return BuildMessage(new List<AudiolibroCrear>(), "Audio libro no encontrado", HttpStatusCode.NotFound, 0);
         }
 
         _unitOfWork.AudiolibroRepository.Delete(audiolibro);
         await _unitOfWork.SaveAsync();
 
-        var audiolibroEliminado = _mapper.Map<AudiolibroResumen>(audiolibro);
+        var audiolibroEliminado = _mapper.Map<AudiolibroCrear>(audiolibro);
 
-        return BuildMessage(new List<AudiolibroResumen> { audiolibroEliminado }, "", HttpStatusCode.OK, 1);
+        return BuildMessage(new List<AudiolibroCrear> { audiolibroEliminado }, "", HttpStatusCode.OK, 1);
     }
 
     public BaseMessage<T> BuildMessage<T>(List<T> responseElements, string message = "", HttpStatusCode

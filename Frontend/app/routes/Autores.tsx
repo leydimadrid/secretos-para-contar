@@ -24,7 +24,7 @@ const paginaAutores = () => {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
             Autores
           </h1>
           <p className="text-lg md:text-xl max-w-2xl text-center text-white/80">

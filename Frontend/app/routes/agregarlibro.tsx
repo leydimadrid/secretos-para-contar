@@ -1,43 +1,42 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { type ActionFunction, json, redirect } from "@remix-run/node"
-import { Form, useActionData, useNavigate } from "@remix-run/react"
-import { useEffect, useState } from "react"
-import { ImageToBase64 } from "~/components/Base64Util"
-import type { AutorResumen } from "~/models/Autor"
-import type { Genero } from "~/models/Libro"
-import { getAllAutores } from "~/services/autorservice"
-import { getAllGeneros } from "~/services/generoservice"
-import { crearLibro } from "~/services/libroservice"
+import { type ActionFunction, json, redirect } from "@remix-run/node";
+import { Form, useActionData, useNavigate } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { ImageToBase64 } from "~/components/Base64Util";
+import type { AutorResumen } from "~/models/Autor";
+import type { Genero } from "~/models/Libro";
+import { getAllAutores } from "~/services/autorservice";
+import { getAllGeneros } from "~/services/generoservice";
+import { crearLibro } from "~/services/libroservice";
 
 // Definir el tipo para los errores
 type ActionData = {
-  errores?: Record<string, string>
-  error?: string
-  success?: boolean
-  debugInfo?: any
-}
+  errores?: Record<string, string>;
+  error?: string;
+  success?: boolean;
+  debugInfo?: any;
+};
 
 export const action: ActionFunction = async ({ request }) => {
-
   try {
-    const formData = await request.formData()
-    const debugFormData: Record<string, any> = {}
+    const formData = await request.formData();
+    const debugFormData: Record<string, any> = {};
 
     // Crear una copia para depuración
     formData.forEach((value, key) => {
       if (value instanceof File) {
-        debugFormData[key] = `File: ${value.name} (${value.size} bytes)`
+        debugFormData[key] = `File: ${value.name} (${value.size} bytes)`;
       } else if (typeof value === "string" && value.startsWith("data:image")) {
-        debugFormData[key] = `${value.substring(0, 50)}... (Base64 image)`
+        debugFormData[key] = `${value.substring(0, 50)}... (Base64 image)`;
       } else {
-        debugFormData[key] = value
+        debugFormData[key] = value;
       }
-    })
+    });
 
-    console.log("Datos del formulario:", debugFormData)
+    console.log("Datos del formulario:", debugFormData);
 
     // Crear un objeto con los datos del libro
     const libroData = {
@@ -49,38 +48,39 @@ export const action: ActionFunction = async ({ request }) => {
       ISBN13: formData.get("isbn") as string,
       Idioma: (formData.get("idioma") as string) || "",
       Portada: (formData.get("portada") as string) || "",
-    }
+    };
 
     // Validar datos requeridos
-    const errores: Record<string, string> = {}
-    if (!libroData.Titulo) errores["titulo"] = "El título es requerido"
-    if (!libroData.AutorId) errores["autorId"] = "Debe seleccionar un autor"
-    if (!libroData.GeneroId) errores["generoId"] = "Debe seleccionar un género"
-    if (!libroData.Editorial) errores["editorial"] = "La editorial es requerida"
-    if (!libroData.ISBN13) errores["isbn"] = "El ISBN es requerido"
+    const errores: Record<string, string> = {};
+    if (!libroData.Titulo) errores["titulo"] = "El título es requerido";
+    if (!libroData.AutorId) errores["autorId"] = "Debe seleccionar un autor";
+    if (!libroData.GeneroId) errores["generoId"] = "Debe seleccionar un género";
+    if (!libroData.Editorial)
+      errores["editorial"] = "La editorial es requerida";
+    if (!libroData.ISBN13) errores["isbn"] = "El ISBN es requerido";
 
     if (Object.keys(errores).length > 0) {
-      return json<ActionData>({ errores }, { status: 400 })
+      return json<ActionData>({ errores }, { status: 400 });
     }
 
     // Crear un nuevo FormData para enviar al backend
-    const nuevoLibro = new FormData()
+    const nuevoLibro = new FormData();
 
     // Agregar los campos de texto al FormData
     Object.entries(libroData).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        nuevoLibro.append(key, String(value))
+        nuevoLibro.append(key, String(value));
       }
-    })
+    });
 
     // Agregar el archivo PDF si existe
-    const pdfFile = formData.get("pdf") as File
+    const pdfFile = formData.get("pdf") as File;
     if (pdfFile && pdfFile.size > 0) {
-      nuevoLibro.append("Pdf", pdfFile)
+      nuevoLibro.append("Pdf", pdfFile);
     }
 
-    const resultado = await crearLibro(nuevoLibro)
-    console.log("Respuesta del backend:", resultado)
+    const resultado = await crearLibro(nuevoLibro);
+    console.log("Respuesta del backend:", resultado);
 
     if (resultado.error) {
       return json<ActionData>(
@@ -88,68 +88,75 @@ export const action: ActionFunction = async ({ request }) => {
           error: resultado.error,
           debugInfo: debugFormData,
         },
-        { status: 400 },
-      )
+        { status: 400 }
+      );
     }
-    return redirect("/panel")
+    return redirect("/panel");
   } catch (error) {
-    console.error("Error al procesar el formulario:", error)
+    console.error("Error al procesar el formulario:", error);
     return json<ActionData>(
       {
-        error: error instanceof Error ? error.message : "Error al procesar el formulario",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Error al procesar el formulario",
       },
-      { status: 500 },
-    )
+      { status: 500 }
+    );
   }
-}
+};
 
 export default function AgregarLibro() {
   const navigate = useNavigate();
 
-  const actionData = useActionData<ActionData>()
-  const [autores, setAutores] = useState<AutorResumen[]>([])
-  const [generos, setGeneros] = useState<Genero[]>([])
-  const [bookCoverBase64, setBookCoverBase64] = useState<string | null>(null)
-  const [pdfFile, setPdfFile] = useState<File | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const actionData = useActionData<ActionData>();
+  const [autores, setAutores] = useState<AutorResumen[]>([]);
+  const [generos, setGeneros] = useState<Genero[]>([]);
+  const [bookCoverBase64, setBookCoverBase64] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handlePdfChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null
-    setPdfFile(file)
-  }
+    const file = event.target.files?.[0] || null;
+    setPdfFile(file);
+  };
 
   useEffect(() => {
     // Obtener los autores y géneros al cargar el componente
     const fetchData = async () => {
       try {
-        const autoresData = await getAllAutores()
-        const generosData = await getAllGeneros()
-        setAutores(autoresData)
-        setGeneros(generosData)
+        const autoresData = await getAllAutores();
+        const generosData = await getAllGeneros();
+        setAutores(autoresData);
+        setGeneros(generosData);
       } catch (error) {
-        console.error("Error al cargar datos:", error)
+        console.error("Error al cargar datos:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const handleBase64Generated = (base64: string) => {
-    setBookCoverBase64(base64)
-  }
+    setBookCoverBase64(base64);
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
-    navigate('/panel');
-  }
+    setIsSubmitting(true);
+    navigate("/panel");
+  };
 
   return (
     <div>
       <div className="container rounded-lg max-w-6xl mx-auto mt-7 mb-7">
         <div className="flex justify-between ml-40 items-center">
           <div>
-            <h2 className="text-xl font-bold text-[#002847]">Agregar nuevo libro</h2>
-            <p className="text-gray-500 text-sm mt-1">Complete los detalles del libro y suba los archivos necesarios</p>
+            <h2 className="text-xl font-bold text-[#002847]">
+              Agregar nuevo libro
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Complete los detalles del libro y suba los archivos necesarios
+            </p>
           </div>
         </div>
 
@@ -159,7 +166,9 @@ export default function AgregarLibro() {
             <p>{actionData.error}</p>
             {actionData.debugInfo && (
               <details className="mt-2">
-                <summary className="cursor-pointer text-sm">Ver detalles técnicos</summary>
+                <summary className="cursor-pointer text-sm">
+                  Ver detalles técnicos
+                </summary>
                 <pre className="mt-2 text-xs overflow-auto max-h-40 p-2 bg-red-50">
                   {JSON.stringify(actionData.debugInfo, null, 2)}
                 </pre>
@@ -168,30 +177,49 @@ export default function AgregarLibro() {
           </div>
         )}
 
-        <Form method="post" className="p-6" encType="multipart/form-data" onSubmit={handleSubmit}>
+        <Form
+          method="post"
+          className="p-6"
+          encType="multipart/form-data"
+          onSubmit={handleSubmit}
+        >
           <div className="grid gap-6">
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">Título</label>
+              <label className="text-right font-medium text-gray-700">
+                Título
+              </label>
               <div>
                 <input
                   type="text"
                   name="titulo"
                   placeholder="Ingrese el título"
-                  className={`w-full px-3 py-2 border ${actionData?.errores?.titulo ? "border-red-500" : "border-gray-300"} rounded`}
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.titulo
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
                   required
                 />
                 {actionData?.errores?.titulo && (
-                  <p className="text-red-500 text-sm mt-1">{actionData.errores.titulo}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.titulo}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">Autor</label>
+              <label className="text-right font-medium text-gray-700">
+                Autor
+              </label>
               <div>
                 <select
                   name="autorId"
-                  className={`w-full px-3 py-2 border ${actionData?.errores?.autorId ? "border-red-500" : "border-gray-300"} rounded`}
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.autorId
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
                   required
                 >
                   <option value="">Seleccione un autor</option>
@@ -202,17 +230,25 @@ export default function AgregarLibro() {
                   ))}
                 </select>
                 {actionData?.errores?.autorId && (
-                  <p className="text-red-500 text-sm mt-1">{actionData.errores.autorId}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.autorId}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">Género</label>
+              <label className="text-right font-medium text-gray-700">
+                Género
+              </label>
               <div>
                 <select
                   name="generoId"
-                  className={`w-full px-3 py-2 border ${actionData?.errores?.generoId ? "border-red-500" : "border-gray-300"} rounded`}
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.generoId
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
                   required
                 >
                   <option value="">Seleccione un género</option>
@@ -223,29 +259,41 @@ export default function AgregarLibro() {
                   ))}
                 </select>
                 {actionData?.errores?.generoId && (
-                  <p className="text-red-500 text-sm mt-1">{actionData.errores.generoId}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.generoId}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">Editorial</label>
+              <label className="text-right font-medium text-gray-700">
+                Editorial
+              </label>
               <div>
                 <input
                   type="text"
                   name="editorial"
                   placeholder="Ingrese la editorial"
-                  className={`w-full px-3 py-2 border ${actionData?.errores?.editorial ? "border-red-500" : "border-gray-300"} rounded`}
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.editorial
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
                   required
                 />
                 {actionData?.errores?.editorial && (
-                  <p className="text-red-500 text-sm mt-1">{actionData.errores.editorial}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.editorial}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-start gap-4">
-              <label className="text-right font-medium text-gray-700 pt-2">Contraportada</label>
+              <label className="text-right font-medium text-gray-700 pt-2">
+                Contraportada
+              </label>
               <textarea
                 name="contraportada"
                 placeholder="Ingrese la descripción de la contraportada"
@@ -255,7 +303,9 @@ export default function AgregarLibro() {
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">Idioma</label>
+              <label className="text-right font-medium text-gray-700">
+                Idioma
+              </label>
               <input
                 type="text"
                 name="idioma"
@@ -265,30 +315,56 @@ export default function AgregarLibro() {
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label className="text-right font-medium text-gray-700">ISBN</label>
+              <label className="text-right font-medium text-gray-700">
+                ISBN
+              </label>
               <div>
                 <input
                   type="text"
                   name="isbn"
                   placeholder="Ingrese el ISBN"
-                  className={`w-full px-3 py-2 border ${actionData?.errores?.isbn ? "border-red-500" : "border-gray-300"} rounded`}
+                  className={`w-full px-3 py-2 border ${
+                    actionData?.errores?.isbn
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded`}
                   required
                 />
-                {actionData?.errores?.isbn && <p className="text-red-500 text-sm mt-1">{actionData.errores.isbn}</p>}
+                {actionData?.errores?.isbn && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {actionData.errores.isbn}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="grid grid-cols-[120px,1fr] items-center gap-4">
-              <label htmlFor="pdf" className="text-right font-medium text-gray-700">
+              <label
+                htmlFor="pdf"
+                className="text-right font-medium text-gray-700"
+              >
                 PDF
               </label>
               <div className="flex">
-                <input type="file" id="pdf" name="pdf" accept=".pdf" required onChange={handlePdfChange} />
+                <input
+                  type="file"
+                  id="pdf"
+                  name="pdf"
+                  accept=".pdf"
+                  required
+                  onChange={handlePdfChange}
+                />
               </div>
             </div>
 
             <div className="flex flex-col items-center my-10">
-              <ImageToBase64 onBase64Generated={handleBase64Generated} stripPrefix={true} />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Portada del libro
+              </label>
+              <ImageToBase64
+                onBase64Generated={handleBase64Generated}
+                stripPrefix={true}
+              />
               {bookCoverBase64 && (
                 <div className="mt-4 max-w-lg mx-auto">
                   <img
@@ -303,21 +379,31 @@ export default function AgregarLibro() {
                 </div>
               )}
 
-              <input type="hidden" name="portada" value={bookCoverBase64 || ""} />
+              <input
+                type="hidden"
+                name="portada"
+                value={bookCoverBase64 || ""}
+              />
             </div>
           </div>
 
           <div className="flex justify-end mt-8 gap-6">
-            <button type="submit" className="bg-[#002847] text-white px-6 py-2 rounded" disabled={isSubmitting}>
+            <button
+              type="submit"
+              className="bg-[#002847] text-white px-6 py-2 rounded"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Guardando..." : "Guardar"}
             </button>
-            <a href="/panel" className="bg-gray-200 text-gray-800 px-6 py-2 rounded text-center">
+            <a
+              href="/panel"
+              className="bg-gray-200 text-gray-800 px-6 py-2 rounded text-center"
+            >
               Cancelar
             </a>
           </div>
         </Form>
       </div>
     </div>
-  )
+  );
 }
-

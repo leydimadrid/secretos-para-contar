@@ -115,6 +115,30 @@ public class AutorService : IAutorService
         autorEntity.Biografia = autor.Biografia;
         autorEntity.Idioma = autor.Idioma;
 
+        // Eliminar las relaciones existentes de género
+        var generosAntiguos = await _unitOfWork.AutorGeneroRepository.GetAllAsync(lg => lg.AutorId == id);
+
+        foreach (var generoAntiguo in generosAntiguos)
+        {
+            _unitOfWork.AutorGeneroRepository.Delete(generoAntiguo);
+        }
+
+        if (autor.GeneroId != 0)
+        {
+            var genero = await _unitOfWork.GeneroRepository.FindAsync(autor.GeneroId);
+            if (genero != null)
+            {
+                var autorGenero = new AutorGenero
+                {
+                    AutorId = autorEntity.id,
+                    GeneroId = genero.id
+                };
+                _unitOfWork.AutorGeneroRepository.AddAsync(autorGenero);
+            }
+        }
+
+
+
         if (!string.IsNullOrEmpty(autor.Foto))
         {
             var carpetaPortadas = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "autores");

@@ -8,17 +8,18 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<LibroCrear, Libro>()
+        CreateMap<Libro, LibroCrear>()
+            .ForMember(dest => dest.Pdf, opt => opt.Ignore())
             .ReverseMap();
 
         CreateMap<Libro, LibroResumen>()
             .ReverseMap();
 
         CreateMap<Audiolibro, AudiolibroCrear>()
+            .ForMember(dest => dest.PathArchivo, opt => opt.Ignore())
             .ReverseMap();
 
-
-        CreateMap<AudiolibroResumen, Audiolibro>()
+        CreateMap<Audiolibro, AudiolibroResumen>()
             .ReverseMap();
 
         CreateMap<AutorResumen, Autor>()

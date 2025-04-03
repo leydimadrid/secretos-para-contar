@@ -49,7 +49,7 @@ namespace TeslaACDC.API.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("Update/{id}")]
-        public async Task<IActionResult> UpdateAudiolibro(int id, AudiolibroResumen audiolibro)
+        public async Task<IActionResult> UpdateAudiolibro(int id, [FromForm] AudiolibroCrear audiolibro)
         {
             var updatedAudiolibro = await _audiolibroService.UpdateAudiolibro(id, audiolibro);
             return Ok(updatedAudiolibro);

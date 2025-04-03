@@ -243,6 +243,50 @@ public class LibroService : ILibroService
         libroEntity.Idioma = libro.Idioma;
         libroEntity.ISBN13 = libro.ISBN13;
 
+        // Eliminar las relaciones existentes de autor y género
+        var autoresAntiguos = await _unitOfWork.LibroAutorRepository.GetAllAsync(la => la.LibroId == id);
+        var generosAntiguos = await _unitOfWork.LibroGeneroRepository.GetAllAsync(lg => lg.LibroId == id);
+
+        foreach (var autorAntiguo in autoresAntiguos)
+        {
+            _unitOfWork.LibroAutorRepository.Delete(autorAntiguo);
+        }
+
+        foreach (var generoAntiguo in generosAntiguos)
+        {
+            _unitOfWork.LibroGeneroRepository.Delete(generoAntiguo);
+        }
+
+        // Agregar las nuevas relaciones de autor y género
+        if (libro.AutorId != 0)
+        {
+            var autor = await _unitOfWork.AutorRepository.FindAsync(libro.AutorId);
+            if (autor != null)
+            {
+                var libroAutor = new LibroAutor
+                {
+                    LibroId = libroEntity.id,
+                    AutorId = autor.id
+                };
+                _unitOfWork.LibroAutorRepository.AddAsync(libroAutor);
+            }
+        }
+
+        if (libro.GeneroId != 0)
+        {
+            var genero = await _unitOfWork.GeneroRepository.FindAsync(libro.GeneroId);
+            if (genero != null)
+            {
+                var libroGenero = new LibroGenero
+                {
+                    LibroId = libroEntity.id,
+                    GeneroId = genero.id
+                };
+                _unitOfWork.LibroGeneroRepository.AddAsync(libroGenero);
+            }
+        }
+
+        // Actualizar la portada y el archivo PDF si es necesario
         if (!string.IsNullOrEmpty(libro.Portada))
         {
             var carpetaPortadas = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "libros", "portadas");

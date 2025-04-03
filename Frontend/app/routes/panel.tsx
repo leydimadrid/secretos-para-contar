@@ -196,10 +196,9 @@ function LibrosPanel({ libros }: { libros: Libro[] }) {
                 <p className="text-sm text-gray-500">{data.autor}</p>
               </div>
               <div className="mt-4">
-                <p className="text-sm text-gray-500">
-                  Año: {data.anioPublicacion}
+                <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  {data.genero}
                 </p>
-                <p className="text-sm text-gray-500">Género: {data.genero}</p>
               </div>
               <div className="mt-5 flex justify-end">
                 <Link

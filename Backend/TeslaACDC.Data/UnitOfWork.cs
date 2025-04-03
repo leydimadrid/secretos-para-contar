@@ -17,6 +17,9 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<int, Lectura> _lecturaRepository;
     private IRepository<int, LibroAutor> _libroAutorRepository;
     private IRepository<int, LibroGenero> _libroGeneroRepository;
+    private IRepository<int, AudiolibroAutor> _audiolibroAutorRepository;
+    private IRepository<int, AudiolibroGenero> _audiolibroGeneroRepository;
+    private IRepository<int, AutorGenero> _autorGeneroRepository;
     private IRepository<int, Donacion> _donacionRepository;
     private IUserRepository _userRepository;
 
@@ -126,6 +129,34 @@ public class UnitOfWork : IUnitOfWork
         {
             _libroGeneroRepository ??= new Repository<int, LibroGenero>(_context);
             return _libroGeneroRepository;
+        }
+    }
+
+    public IRepository<int, AudiolibroAutor> AudiolibroAutorRepository
+    {
+        get
+        {
+            _audiolibroAutorRepository ??= new Repository<int, AudiolibroAutor>(_context);
+            return _audiolibroAutorRepository;
+        }
+    }
+
+    public IRepository<int, AudiolibroGenero> AudiolibroGeneroRepository
+    {
+        get
+        {
+            _audiolibroGeneroRepository ??= new Repository<int, AudiolibroGenero>(_context);
+            return _audiolibroGeneroRepository;
+        }
+    }
+
+
+    public IRepository<int, AutorGenero> AutorGeneroRepository
+    {
+        get
+        {
+            _autorGeneroRepository ??= new Repository<int, AutorGenero>(_context);
+            return _autorGeneroRepository;
         }
     }
 
