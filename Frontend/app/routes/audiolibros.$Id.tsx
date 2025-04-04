@@ -40,7 +40,6 @@ const audiolibroDetalle = () => {
   }
 
   const audiolibro = response.responseElements[0];
-  console.log(audiolibro.pathArchivo);
 
   const descargarArchivo = async (idLibro: string) => {
     try {
@@ -48,7 +47,7 @@ const audiolibroDetalle = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${audiolibro.titulo}.mp4`;
+      a.download = `${audiolibro.pathArchivo}`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -79,10 +78,10 @@ const audiolibroDetalle = () => {
       </div>
 
       <main className="container mx-auto min-h-full">
-        <div className="w-full max-w-3xl mx-auto mb-16">
-          {audiolibro.pathArchivo === "mp3" ? (
+        <div className="w-full h-fit max-w-3xl mx-auto mb-8 mt-16">
+          {audiolibro.pathArchivo.endsWith(".mp3") ? (
             <audio
-              className="w-full h-7"
+              className="w-full h-20"
               controls
               src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
             >
@@ -90,7 +89,7 @@ const audiolibroDetalle = () => {
             </audio>
           ) : (
             <video
-              className="w-full"
+              className="w-full h-full"
               controls
               src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
             >
@@ -119,10 +118,9 @@ const audiolibroDetalle = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-[#fa4616] mb-2">
             {audiolibro.titulo}
           </h1>
-          <h2 className="text-xl mb-4 text-black">{audiolibro.autor}</h2>
+          <h2 className="text-xl mb-2 text-black">{audiolibro.autor}</h2>
 
-          <p className="text-gray-700 mb-2">Duración: {audiolibro.duracion}</p>
-          <p className="text-gray-700 mb-2">Tamaño: {audiolibro.tamañoMB}</p>
+          <p className="text-gray-700">Duración: {audiolibro.duracion}</p>
 
           <div className="flex justify-center gap-16 mb-12 mt-12">
             <button

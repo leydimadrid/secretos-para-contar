@@ -161,7 +161,7 @@ export default function EditarAudiolibro() {
     error?: string;
   }>();
 
-  console.log(audiolibro)
+  console.log(audiolibro);
 
   const actionData = useActionData<ActionData>();
   const [autores, setAutores] = useState<AutorResumen[]>([]);
@@ -195,7 +195,6 @@ export default function EditarAudiolibro() {
       setBookCoverBase64(audiolibro.portada);
     }
   }, [audiolibro]);
-
 
   const handleBase64Generated = (base64: string) => {
     setBookCoverBase64(base64);
@@ -353,10 +352,10 @@ export default function EditarAudiolibro() {
               <label className="text-right font-medium text-gray-700 pt-2">
                 Tamaño MB
               </label>
-              <textarea
+              <input
+                type="text"
                 name="tamaño_m_b"
                 placeholder="Ingrese el tamaño"
-                rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded resize-none"
               />
             </div>

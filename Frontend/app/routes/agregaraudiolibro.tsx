@@ -298,10 +298,10 @@ export default function AgregarAudiolibro() {
               <label className="text-right font-medium text-gray-700 pt-2">
                 Tamaño MB
               </label>
-              <textarea
+              <input
+                type="text"
                 name="tamaño_m_b"
                 placeholder="Ingrese el tamaño"
-                rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded resize-none"
               />
             </div>

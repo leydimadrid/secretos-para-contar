@@ -28,14 +28,11 @@ const Footer = () => {
               <Link to="/libros" className="hover:text-[#f94517]">
                 Libros
               </Link>
-              <Link to="/audio-libros" className="hover:text-[#f94517]">
+              <Link to="/audiolibros" className="hover:text-[#f94517]">
                 Audio libros
               </Link>
               <Link to="/autores" className="hover:text-[#f94517]">
                 Autores
-              </Link>
-              <Link to="/contacto" className="hover:text-[#f94517]">
-                Contacto
               </Link>
             </nav>
 
@@ -58,7 +55,16 @@ const Footer = () => {
         </div>
 
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => {
+            const scrollDuration = 500;
+            const scrollStep = -window.scrollY / (scrollDuration / 16);
+            const scrollInterval = setInterval(() => {
+              window.scrollBy(0, scrollStep);
+              if (window.scrollY === 0) {
+                clearInterval(scrollInterval);
+              }
+            }, 16);
+          }}
           className="fixed bottom-4 right-4 bg-white text-[#002847] p-2 rounded-full shadow-lg"
           aria-label="Volver arriba"
         >
