@@ -5,10 +5,6 @@ Sitio web actual: https://secretosparacontar.org/
 
 ## 👥 Equipo de Desarrollo  
 
-Nuestro equipo está compuesto por apasionados del desarrollo y el diseño, comprometidos con la accesibilidad y la educación.  
-
-### 🚀 **Integrantes**  
-
 🔹 **Leydi Johana Madrid Vásquez** – *Desarrolladora FullStack*  
 
 ## 🛠️ Tecnologías Utilizadas
@@ -27,7 +23,7 @@ Tailwind CSS + DaisyUI 🎨 - Estilización moderna y eficiente con componentes 
 
 C# 💻 - Lenguaje de programación principal para la lógica de backend.
 
-MVC + Entity Framework 🏗️ - Arquitectura organizada y acceso eficiente a bases de datos.
+Entity Framework 🏗️ - Acceso eficiente a bases de datos.
 
 
 
@@ -38,8 +34,8 @@ Sigue estos pasos para ejecutar el proyecto localmente:
 1️⃣ Clona el repositorio
 
 ```
-git clone https://github.com/leydimadrid/PROYECTO-KATRINA.git
-cd nombre-del-repositorio
+git clone https://github.com/leydimadrid/API_SECRETOS-PARA-CONTAR.git
+cd API_SECRETOS-PARA-CONTAR
 ```
 
 2️⃣ Configura el Frontend
@@ -54,7 +50,6 @@ npm run dev
 
 ```
 cd backend
-dotnet restore
 dotnet run
 ```
 
@@ -66,7 +61,6 @@ dotnet run
 ✅ Diseño responsivo y atractivo con Tailwind + DaisyUI.
 ✅ Backend robusto con .NET 9 y C#.
 ✅ Integración de Entity Framework para una gestión eficiente de bases de datos.
-✅ Arquitectura basada en MVC para un código mantenible.
 
 
 
@@ -75,4 +69,4 @@ dotnet run
 Si quieres contribuir a este proyecto, siéntete libre de hacer un fork y abrir un pull request. ¡Toda ayuda es bienvenida! 💪
 
 
-✨ ¡Gracias por visitar nuestro proyecto!  
+✨ ¡Gracias por visitar mi proyecto!  
