@@ -1,6 +1,6 @@
 # Proyecto
 ## 📖 Secretos para Contar  
-Bienvenido al repositorio del proyecto Katrina - **Secretos para Contar**, una plataforma que facilita el acceso a libros y materiales digitales, integrando audiocuentos, biografías en audio, videos y más.  
+Bienvenido al repositorio del proyecto **Secretos para Contar**, una plataforma que facilita el acceso a libros y materiales digitales, integrando audiocuentos, biografías en audio, videos y más.  
 Sitio web actual: https://secretosparacontar.org/
 
 ## 👥 Equipo de Desarrollo  
