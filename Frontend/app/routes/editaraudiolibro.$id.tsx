@@ -249,7 +249,7 @@ export default function EditarAudiolibro() {
                 <input
                   type="text"
                   name="titulo"
-                  defaultValue={audiolibro.titulo}
+                  placeholder="Ingrese el título"
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.titulo
                       ? "border-red-500"

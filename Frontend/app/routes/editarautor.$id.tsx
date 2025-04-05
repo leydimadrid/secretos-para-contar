@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { ImageToBase64 } from "~/components/Base64Util";
 import type { AutorCrear, AutorResumen } from "~/models/Autor";
 import type { EditarLibro, Libro } from "~/models/Libro";
-import type { Genero} from "~/models/Genero";
+import type { Genero } from "~/models/Genero";
 import { getAllGeneros } from "~/services/generoservice";
 import { actualizarLibro } from "~/services/libroservice";
 import { actualizarAutor, getAutorById } from "~/services/autorservice";
@@ -334,6 +334,9 @@ export default function EditarAutor() {
             </div>
 
             <div className="flex flex-col items-center my-10">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Foto del autor
+              </label>
               <ImageToBase64
                 onBase64Generated={handleBase64Generated}
                 stripPrefix={true}

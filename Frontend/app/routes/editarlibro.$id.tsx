@@ -230,7 +230,7 @@ export default function EditarLibro() {
                 <input
                   type="text"
                   name="titulo"
-                  defaultValue={libro?.titulo || ""}
+                  placeholder="Ingrese el título"
                   className={`w-full px-3 py-2 border ${
                     actionData?.errores?.titulo
                       ? "border-red-500"
@@ -405,8 +405,11 @@ export default function EditarLibro() {
                 )}
               </div>
             </div>
-
+           
             <div className="flex flex-col items-center my-10">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Portada del libro
+            </label>
               <ImageToBase64
                 onBase64Generated={handleBase64Generated}
                 stripPrefix={true}
