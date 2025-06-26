@@ -45,7 +45,7 @@ const Header = () => {
         <div className="flex">
           <Link to="/">
             <img
-              src="/img/Logotipo vertical.svg"
+              src="/img/logotipo-vertical.svg"
               alt="Secretos para contar"
               width={90}
               height={90}

@@ -1,1 +1,0 @@
-const o="http://localhost:5046/api/autor";async function e(){try{const r=await fetch(`${o}/autores`);if(!r.ok)throw new Error("Error al obtener los autores");return(await r.json()).responseElements||[]}catch(r){console.error("Error en getAllAutores:",r)}}export{e as g};
