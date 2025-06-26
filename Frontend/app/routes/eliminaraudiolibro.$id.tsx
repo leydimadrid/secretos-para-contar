@@ -69,7 +69,7 @@ export default function EliminarAudioLibro() {
         <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
           <div className="flex justify-between items-center p-6 border-b">
             <div>
-              <h2 className="text-xl font-bold text-[#002847]">Eliminar libro</h2>
+              <h2 className="text-xl font-bold text-[#002847]">Eliminar audiolibro</h2>
               <p className="text-gray-500 text-sm mt-1">
                 Confirme la eliminación del audiolibro
               </p>
