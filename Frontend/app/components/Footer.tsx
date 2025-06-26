@@ -9,7 +9,7 @@ const Footer = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="w-20 h-20 relative">
               <img
-                src="/public/img/Logotipo vertical.svg"
+                src="/img/Logotipo vertical.svg"
                 alt="Secretos para contar"
                 width={90}
                 height={90}
