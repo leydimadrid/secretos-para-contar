@@ -92,7 +92,7 @@ const Libros = () => {
               key={item.id ? item.id.toString() : Math.random().toString()}
               id={item.id}
               titulo={item.titulo}
-              portada={`http://localhost:5046/portadas/${item.portada}`}
+              portada={`http://3.140.73.64:5000/portadas/${item.portada}`}
               autor={item.autor}
               genero={item.genero}
             />

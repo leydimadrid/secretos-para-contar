@@ -52,24 +52,6 @@ const pagina_Audiolibros = () => {
           </div>
         </div>
 
-        {/* <div className="max-w-2xl mx-auto mb-6">
-          <div className="flex">
-            <div className="relative flex-grow">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar audiolibro"
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-[#fa4616] focus:border-[#fa4616] focus:outline-none"
-              />
-            </div>
-            <button className="bg-[#fa4616] hover:bg-[#e03a0e] text-white px-6 py-3 rounded-r-lg font-medium transition-colors">
-              Buscar
-            </button>
-          </div>
-        </div> */}
-
         <div className="max-w-6xl mx-auto mb-4 mt-6">
           <p className="text-gray-600 text-sm">
             Mostrando {data.responseElements.length} resultados
@@ -84,7 +66,7 @@ const pagina_Audiolibros = () => {
               titulo={item.titulo}
               autor={item.autor}
               genero={item.genero}
-              portada={`http://localhost:5046/portadasAudio/${item.portada}`}
+              portada={`http://3.140.73.64:5000/portadasAudio/${item.portada}`}
             />
           ))}
         </div>

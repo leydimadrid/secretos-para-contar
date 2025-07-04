@@ -81,7 +81,7 @@ export default function Index() {
                 key={item.id}
                 id={item.id}
                 titulo={item.titulo}
-                portada={`http://localhost:5046/portadas/${item.portada}`}
+                portada={`http://3.140.73.64:5000/portadas/${item.portada}`}
                 autor={item.autor}
                 genero={item.genero}
               />

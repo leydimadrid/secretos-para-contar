@@ -99,7 +99,7 @@ const paginaAutores = () => {
               id={item.id}
               nombre={item.nombre}
               apellidos={item.apellidos}
-              foto={`http://localhost:5046/autores/${item.foto}`}
+              foto={`http://3.140.73.64:5000/autores/${item.foto}`}
               generos={item.generos}
               nacionalidad={""}
             />

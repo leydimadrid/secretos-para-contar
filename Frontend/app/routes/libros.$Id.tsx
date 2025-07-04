@@ -93,7 +93,7 @@ const LibroDetalle = () => {
             {/* Book Cover */}
             <div className="md:col-span-1 mx-auto shadow-xl">
                 <img
-                  src={`http://localhost:5046/portadas/${libro.portada}`}
+                  src={`http://3.140.73.64:5000/portadas/${libro.portada}`}
                   alt={`Portada de ${libro.titulo}`}
                   className="bg-[#fa4616] w-96 object-cover"
                 />
@@ -191,7 +191,7 @@ const LibroDetalle = () => {
                       key={libroRelacionado.id}
                       id={libroRelacionado.id}
                       titulo={libroRelacionado.titulo}
-                      portada={`http://localhost:5046/portadas/${libroRelacionado.portada}`}
+                      portada={`http://3.140.73.64:5000/portadas/${libroRelacionado.portada}`}
                       autor={libroRelacionado.autor}
                       genero={libroRelacionado.genero}
                     />

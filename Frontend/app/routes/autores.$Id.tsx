@@ -78,7 +78,7 @@ const AutorDetalle = () => {
             {/* Book Cover */}
             <div className="md:col-span-1 mx-auto">
               <img
-                src={`http://localhost:5046/autores/${autor.foto}`}
+                src={`http://3.140.73.64:5000/autores/${autor.foto}`}
                 alt="Portada del libro"
                 width={400}
                 height={650}
@@ -130,7 +130,7 @@ const AutorDetalle = () => {
                       id={libroRelacionado.id}
                       titulo={libroRelacionado.titulo}
                       autor={libroRelacionado.autor}
-                      portada={`http://localhost:5046/portadas/${libroRelacionado.portada}`}
+                      portada={`http://3.140.73.64:5000/portadas/${libroRelacionado.portada}`}
                       genero={libroRelacionado.genero}
                     />
                   )

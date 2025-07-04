@@ -83,7 +83,7 @@ const audiolibroDetalle = () => {
             <audio
               className="w-full h-20"
               controls
-              src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
+              src={`http://3.140.73.64:5000/archivos/${audiolibro.pathArchivo}`}
             >
               Audio
             </audio>
@@ -91,7 +91,7 @@ const audiolibroDetalle = () => {
             <video
               className="w-full h-full"
               controls
-              src={`http://localhost:5046/archivos/${audiolibro.pathArchivo}`}
+              src={`http://3.140.73.64:5000/archivos/${audiolibro.pathArchivo}`}
             >
               Video
             </video>
@@ -161,7 +161,7 @@ const audiolibroDetalle = () => {
                     key={audiolibroRelacionado.id}
                     id={audiolibroRelacionado.id}
                     titulo={audiolibroRelacionado.titulo}
-                    portada={`http://localhost:5046/portadasAudio/${audiolibroRelacionado.portada}`}
+                    portada={`http://3.140.73.64:5000/portadasAudio/${audiolibroRelacionado.portada}`}
                     autor={audiolibroRelacionado.autor}
                     genero={audiolibroRelacionado.genero}
                   />
