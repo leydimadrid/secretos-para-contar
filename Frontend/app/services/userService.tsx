@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5046/api/user";
+const API_URL = "http://3.148.198.72:5000/api/user";
 
 export async function getAllUsuarios() {
   try {

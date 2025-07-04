@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { LibroFiltro, LibroResumen } from "~/models/Libro";
 
-const API_URL = "http://localhost:5046/api/libro";
+const API_URL = "http://3.148.198.72:5000/api/libro";
 
 export async function getAllLibros() {
   try {
@@ -164,7 +164,7 @@ export async function getLibrosFiltrados(
   busqueda: string
 ) {
   // Construir URL con parámetros de consulta
-  let url = `http://localhost:5046/api/Libro/filtrar?`;
+  let url = `http://3.148.198.72:5000/api/Libro/filtrar?`;
 
   // Añadir parámetros si se proporcionan
   if (autorId) {

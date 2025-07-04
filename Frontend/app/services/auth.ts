@@ -1,7 +1,7 @@
 export async function Login(email: string, password: string) {
   try {
     const response = await fetch(
-      "http://localhost:5046/api/authenticate/login",
+      "http://3.148.198.72:5000/api/authenticate/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ export async function Register(formData: {
 }) {
   try {
     const response = await fetch(
-      "http://localhost:5046/api/authenticate/register/admin",
+      "http://3.148.198.72:5000/api/authenticate/register/admin",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5046/api/audiolibro";
+const API_URL = "http://3.148.198.72:5000/api/audiolibro";
 
 export async function getAllAudiolibros() {
   try {
@@ -15,7 +15,7 @@ export async function getAllAudiolibros() {
 }
 
 export async function getAudiolibroById(Id: string) {
-  const response = await fetch(`http://localhost:5046/api/audiolibro/${Id}`);
+  const response = await fetch(`http://3.148.198.72:5000/api/audiolibro/${Id}`);
 
   if (!response.ok) {
     throw new Error(`Error al obtener el audiolibro con ID ${Id}`);
