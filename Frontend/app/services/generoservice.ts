@@ -1,4 +1,4 @@
-const API_URL = "http://3.148.198.72:5000/api/genero";
+const API_URL = "http://3.140.73.64:5000/api/genero";
 
 export async function getAllGeneros() {
   try {

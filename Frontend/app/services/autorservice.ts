@@ -1,4 +1,4 @@
-const API_URL = "http://3.148.198.72:5000/api/autor";
+const API_URL = "http://3.140.73.64:5000/api/autor";
 
 export async function getAllAutores() {
   try {
@@ -15,7 +15,7 @@ export async function getAllAutores() {
   }
 }
 export async function getAutorById(Id: string) {
-  const response = await fetch(`http://3.148.198.72:5000/api/autor/${Id}`);
+  const response = await fetch(`http://3.140.73.64:5000/api/autor/${Id}`);
 
   if (!response.ok) {
     throw new Error(`Error al obtener el autor con ID ${Id}`);
