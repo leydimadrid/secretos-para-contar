@@ -1,8 +1,8 @@
-const API_URL = "http://3.140.73.64:5000/api/user";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getAllUsuarios() {
   try {
-    const response = await fetch(`${API_URL}/usuarios`);
+    const response = await fetch(`${apiUrl}/api/user/usuarios`);
 
     if (!response.ok) {
       throw new Error("Error al obtener los usuarios");

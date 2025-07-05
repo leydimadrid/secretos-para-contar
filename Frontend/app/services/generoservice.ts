@@ -1,8 +1,8 @@
-const API_URL = "http://3.140.73.64:5000/api/genero";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getAllGeneros() {
   try {
-    const response = await fetch(`${API_URL}/generos`);
+    const response = await fetch(`${apiUrl}/api/genero/generos`);
 
     if (!response.ok) {
       throw new Error("Error al obtener los generos");

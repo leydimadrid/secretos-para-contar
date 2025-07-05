@@ -1,7 +1,9 @@
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export async function Login(email: string, password: string) {
   try {
     const response = await fetch(
-      "http://3.140.73.64:5000/api/authenticate/login",
+      `${apiUrl}/api/authenticate/login`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,7 +31,7 @@ export async function Register(formData: {
 }) {
   try {
     const response = await fetch(
-      "http://3.140.73.64:5000/api/authenticate/register/admin",
+      "${apiUrl}/api/authenticate/register/admin",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

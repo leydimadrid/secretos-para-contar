@@ -36,6 +36,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   return json({ response });
 }
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const AutorDetalle = () => {
   const { response } = useLoaderData<typeof loader>();
 
@@ -78,7 +81,7 @@ const AutorDetalle = () => {
             {/* Book Cover */}
             <div className="md:col-span-1 mx-auto">
               <img
-                src={`http://3.140.73.64:5000/autores/${autor.foto}`}
+                src={`${apiUrl}/autores/${autor.foto}`}
                 alt="Portada del libro"
                 width={400}
                 height={650}
@@ -130,7 +133,7 @@ const AutorDetalle = () => {
                       id={libroRelacionado.id}
                       titulo={libroRelacionado.titulo}
                       autor={libroRelacionado.autor}
-                      portada={`http://3.140.73.64:5000/portadas/${libroRelacionado.portada}`}
+                      portada={`${apiUrl}/portadas/${libroRelacionado.portada}`}
                       genero={libroRelacionado.genero}
                     />
                   )

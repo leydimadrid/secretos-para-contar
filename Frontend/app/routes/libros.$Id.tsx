@@ -23,6 +23,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return json({ response });
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const LibroDetalle = () => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [showPdf, setShowPdf] = useState(false);
@@ -93,7 +95,7 @@ const LibroDetalle = () => {
             {/* Book Cover */}
             <div className="md:col-span-1 mx-auto shadow-xl">
                 <img
-                  src={`http://3.140.73.64:5000/portadas/${libro.portada}`}
+                  src={`${apiUrl}/portadas/${libro.portada}`}
                   alt={`Portada de ${libro.titulo}`}
                   className="bg-[#fa4616] w-96 object-cover"
                 />
@@ -191,7 +193,7 @@ const LibroDetalle = () => {
                       key={libroRelacionado.id}
                       id={libroRelacionado.id}
                       titulo={libroRelacionado.titulo}
-                      portada={`http://3.140.73.64:5000/portadas/${libroRelacionado.portada}`}
+                      portada={`${apiUrl}/portadas/${libroRelacionado.portada}`}
                       autor={libroRelacionado.autor}
                       genero={libroRelacionado.genero}
                     />

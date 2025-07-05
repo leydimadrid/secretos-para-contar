@@ -1,8 +1,7 @@
-const API_URL = "http://3.140.73.64:5000/api/audiolibro";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 export async function getAllAudiolibros() {
   try {
-    const response = await fetch(`${API_URL}/audiolibros`);
+    const response = await fetch(`${apiUrl}/api/audiolibro/audiolibros`);
 
     if (!response.ok) {
       throw new Error("Error al obtener los audiolibros");
@@ -15,7 +14,7 @@ export async function getAllAudiolibros() {
 }
 
 export async function getAudiolibroById(Id: string) {
-  const response = await fetch(`http://3.140.73.64:5000/api/audiolibro/${Id}`);
+  const response = await fetch(`${apiUrl}/api/audiolibro/${Id}`);
 
   if (!response.ok) {
     throw new Error(`Error al obtener el audiolibro con ID ${Id}`);
@@ -43,7 +42,10 @@ export const crearAudiolibro = async (formData: FormData) => {
     });
 
     // Verificar que la URL termine correctamente
-    const url = API_URL.endsWith("/create") ? API_URL : `${API_URL}/create`;
+    if (!apiUrl) {
+      throw new Error("La variable de entorno PUBLIC_API_URL no está definida.");
+    }
+    const url = apiUrl.endsWith("/create") ? apiUrl : `${apiUrl}api/audiolibro/create`;
 
     console.log("URL final:", url);
 
@@ -80,13 +82,13 @@ export const actualizarAudiolibro = async (id: number, formData: FormData) => {
   try {
     // Imprimir los datos que se están enviando para depuración
     console.log("Datos enviados al backend para actualizar:", {
-      url: `${API_URL}/update/${id}`,
+      url: `${apiUrl}api/audiolibro/update/${id}`,
       method: "PUT",
       formData: Object.fromEntries(formData.entries()),
     });
 
     // Verificar que la URL termine correctamente
-    const url = `${API_URL}/update/${id}`;
+    const url = `${apiUrl}api/audiolibro/update/${id}`;
 
     console.log("URL final para actualizar:", url);
 
@@ -140,7 +142,7 @@ export const actualizarAudiolibro = async (id: number, formData: FormData) => {
 export const eliminarAudiolibro = async (id: number) => {
   try {
     // Construir la URL correctamente
-    const url = `${API_URL}/delete/${id}`;
+    const url = `${apiUrl}api/audiolibro/delete/${id}`;
     console.log("URL para eliminar:", url);
 
     const response = await fetch(url, {
@@ -159,7 +161,7 @@ export const eliminarAudiolibro = async (id: number) => {
 };
 
 export async function descargarAudiolibro(id: string) {
-  const url = `${API_URL}/descargar/${id}`;
+  const url = `${apiUrl}api/audiolibro/descargar/${id}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {

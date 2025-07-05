@@ -1,11 +1,11 @@
 import { json } from "@remix-run/node";
 import { LibroFiltro, LibroResumen } from "~/models/Libro";
 
-const API_URL = "http://3.140.73.64:5000/api/libro";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getAllLibros() {
   try {
-    const response = await fetch(`${API_URL}/libros`);
+    const response = await fetch(`${apiUrl}/api/libro/libros`);
 
     if (!response.ok) {
       throw new Error("Error al obtener los libros");
@@ -18,7 +18,7 @@ export async function getAllLibros() {
 }
 
 export async function getLibroById(Id: string) {
-  const response = await fetch(`${API_URL}/${Id}`);
+  const response = await fetch(`${apiUrl}/api/libro/${Id}`);
 
   if (!response.ok) {
     throw new Error(`Error al obtener el libro con ID ${Id}`);
@@ -45,8 +45,12 @@ export const crearLibro = async (formData: FormData) => {
       }
     });
 
+    // Verificar que apiUrl esté definido
+    if (!apiUrl) {
+      throw new Error("La variable de entorno PUBLIC_API_URL no está definida.");
+    }
     // Verificar que la URL termine correctamente
-    const url = API_URL.endsWith("/create") ? API_URL : `${API_URL}/create`;
+    const url = apiUrl.endsWith("/create") ? apiUrl : `${apiUrl}/api/libro/create`;
 
     console.log("URL final:", url);
 
@@ -83,13 +87,13 @@ export const actualizarLibro = async (id: number, formData: FormData) => {
   try {
     // Imprimir los datos que se están enviando para depuración
     console.log("Datos enviados al backend para actualizar:", {
-      url: `${API_URL}/update/${id}`,
+      url: `${apiUrl}/api/libro/update/${id}`,
       method: "PUT",
       formData: Object.fromEntries(formData.entries()),
     });
 
     // Verificar que la URL termine correctamente
-    const url = `${API_URL}/update/${id}`;
+    const url = `${apiUrl}/api/libro/update/${id}`;
 
     console.log("URL final para actualizar:", url);
 
@@ -141,7 +145,7 @@ export const actualizarLibro = async (id: number, formData: FormData) => {
 };
 
 export async function descargarLibro(id: string) {
-  const url = `${API_URL}/descargar/${id}`;
+  const url = `${apiUrl}/api/libro/descargar/${id}`;
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -164,7 +168,7 @@ export async function getLibrosFiltrados(
   busqueda: string
 ) {
   // Construir URL con parámetros de consulta
-  let url = `http://3.140.73.64:5000/api/Libro/filtrar?`;
+  let url = `${apiUrl}/api/libro/filtrar?`;
 
   // Añadir parámetros si se proporcionan
   if (autorId) {
@@ -189,7 +193,7 @@ export async function getLibrosFiltrados(
 export const eliminarLibro = async (id: number) => {
   try {
     // Construir la URL correctamente
-    const url = `${API_URL}/delete/${id}`;
+    const url = `${apiUrl}/api/libro/delete/${id}`;
     console.log("URL para eliminar:", url);
 
     const response = await fetch(url, {

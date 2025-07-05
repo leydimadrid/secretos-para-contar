@@ -2,7 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { LibroResumen } from "~/models/Libro";
 import Card from "~/components/Card";
 import { ArrowRight } from "lucide-react";
-import { Link, useLoaderData } from "@remix-run/react";
+import { json, Link, useLoaderData } from "@remix-run/react";
 import { getAllLibros } from "~/services/libroservice";
 
 export const meta: MetaFunction = () => {
@@ -12,10 +12,17 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-//Conexión BACK
-export function loader() {
-  return getAllLibros();
-}
+const apiUrl = import.meta.env.VITE_API_URL;
+
+export const loader = async () => {
+  try {
+    const libros = await getAllLibros();
+    return json(libros ?? []);
+  } catch (error) {
+    console.error("Error cargando libros:", error);
+    return json([]);
+  }
+};
 
 export default function Index() {
   //Conexión BACK
@@ -76,16 +83,19 @@ export default function Index() {
             </p>
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl gap-8 md:gap-10 m-auto">
-            {data.responseElements.slice(0, 4).map((item: LibroResumen) => (
-              <Card
-                key={item.id}
-                id={item.id}
-                titulo={item.titulo}
-                portada={`http://3.140.73.64:5000/portadas/${item.portada}`}
-                autor={item.autor}
-                genero={item.genero}
-              />
-            ))}
+            {Array.isArray(data?.responseElements) &&
+              data.responseElements
+                .slice(0, 4)
+                .map((item: LibroResumen) => (
+                  <Card
+                    key={item.id}
+                    id={item.id}
+                    titulo={item.titulo}
+                    portada={`${apiUrl}/portadas/${item.portada}`}
+                    autor={item.autor}
+                    genero={item.genero}
+                  />
+                ))}
           </div>
         </div>
       </section>

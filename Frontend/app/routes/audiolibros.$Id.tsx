@@ -9,6 +9,9 @@ import {
   getAudiolibroById,
 } from "~/services/audiolibroservice";
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 // Loader para cargar datos del servidor
 export async function loader({ params }: LoaderFunctionArgs) {
   const { Id } = params;
@@ -83,7 +86,7 @@ const audiolibroDetalle = () => {
             <audio
               className="w-full h-20"
               controls
-              src={`http://3.140.73.64:5000/archivos/${audiolibro.pathArchivo}`}
+              src={`${apiUrl}/archivos/${audiolibro.pathArchivo}`}
             >
               Audio
             </audio>
@@ -91,7 +94,7 @@ const audiolibroDetalle = () => {
             <video
               className="w-full h-full"
               controls
-              src={`http://3.140.73.64:5000/archivos/${audiolibro.pathArchivo}`}
+              src={`${apiUrl}/archivos/${audiolibro.pathArchivo}`}
             >
               Video
             </video>
@@ -161,7 +164,7 @@ const audiolibroDetalle = () => {
                     key={audiolibroRelacionado.id}
                     id={audiolibroRelacionado.id}
                     titulo={audiolibroRelacionado.titulo}
-                    portada={`http://3.140.73.64:5000/portadasAudio/${audiolibroRelacionado.portada}`}
+                    portada={`${apiUrl}/portadasAudio/${audiolibroRelacionado.portada}`}
                     autor={audiolibroRelacionado.autor}
                     genero={audiolibroRelacionado.genero}
                   />

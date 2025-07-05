@@ -1,13 +1,23 @@
 import { Home, Plus, Search } from "lucide-react";
 import Card from "../components/Card";
-import { Link, useLoaderData } from "@remix-run/react";
+import { json, Link, useLoaderData } from "@remix-run/react";
 import { AudioLibroResumen } from "~/models/AudioLibro";
 import { getAllAudiolibros } from "~/services/audiolibroservice";
 import CardAudiolibro from "~/components/CardAudiolibro";
 
-export function loader() {
-  return getAllAudiolibros();
-}
+const apiUrl = import.meta.env.VITE_API_URL;
+
+export const loader = async () => {
+  try {
+    const audiolibros = await getAllAudiolibros();
+    return json(audiolibros ?? []);
+  } catch (error) {
+    console.error("Error cargando audiolibros:", error);
+    return json([]);
+  }
+};
+
+
 
 const pagina_Audiolibros = () => {
   const data = useLoaderData<typeof loader>();
@@ -54,21 +64,22 @@ const pagina_Audiolibros = () => {
 
         <div className="max-w-6xl mx-auto mb-4 mt-6">
           <p className="text-gray-600 text-sm">
-            Mostrando {data.responseElements.length} resultados
+            Mostrando {data?.responseElements ?? 0} resultados
           </p>
         </div>
 
         <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 max-w-6xl mx-auto mt-8 mb-16">
-          {data.responseElements.map((item: AudioLibroResumen) => (
-            <CardAudiolibro
-              key={item.id}
-              id={item.id}
-              titulo={item.titulo}
-              autor={item.autor}
-              genero={item.genero}
-              portada={`http://3.140.73.64:5000/portadasAudio/${item.portada}`}
-            />
-          ))}
+          {Array.isArray(data?.responseElements) &&
+            data.responseElements.map((item: AudioLibroResumen) => (
+              <CardAudiolibro
+                key={item.id}
+                id={item.id}
+                titulo={item.titulo}
+                autor={item.autor}
+                genero={item.genero}
+                portada={`${apiUrl}/portadasAudio/${item.portada}`}
+              />
+            ))}
         </div>
       </main>
     </div>
