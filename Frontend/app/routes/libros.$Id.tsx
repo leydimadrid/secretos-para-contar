@@ -23,6 +23,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return json({ response });
 }
 
+
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const LibroDetalle = () => {
