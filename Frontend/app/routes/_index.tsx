@@ -36,7 +36,7 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 to-black/65 z-10"></div>
           {/* Background image */}
           <img
-            src="/public/img/paisaje.png?height=651&width=1440&&top=121px&text=paisaje"
+            src="/img/paisaje.png?height=651&width=1440&&top=121px&text=paisaje"
             alt="Paisaje rural"
             className="absolute inset-0 w-full h-full object-cover"
           />
