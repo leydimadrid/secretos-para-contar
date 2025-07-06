@@ -38,6 +38,7 @@ export async function Register(formData: {
         body: JSON.stringify(formData),
       }
     );
+    
     if (!response.ok) {
       throw new Error("Error en el registro");
     }
