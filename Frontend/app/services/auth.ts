@@ -31,7 +31,7 @@ export async function Register(formData: {
 }) {
   try {
     const response = await fetch(
-      "${apiUrl}/api/authenticate/register/admin",
+      `${apiUrl}/api/authenticate/register/admin`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
