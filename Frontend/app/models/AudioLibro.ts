@@ -7,7 +7,7 @@ export interface AudioLibroResumen {
 }
 
 export interface AudioLibro extends AudioLibroResumen {
-  duracion: number;
+  duracion: string;
   tamañoMB: number;
   narrador: string;
   idioma: string;
