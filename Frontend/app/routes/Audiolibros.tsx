@@ -5,7 +5,7 @@ import { AudioLibroResumen } from "~/models/AudioLibro";
 import { getAllAudiolibros } from "~/services/audiolibroservice";
 import CardAudiolibro from "~/components/CardAudiolibro";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+
 
 export const loader = async () => {
   try {
@@ -17,7 +17,7 @@ export const loader = async () => {
   }
 };
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const pagina_Audiolibros = () => {
   const data = useLoaderData<typeof loader>();
