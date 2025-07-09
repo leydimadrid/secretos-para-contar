@@ -27,6 +27,7 @@ const pagina_Audiolibros = () => {
       <main>
         <div className="relative w-full h-64 md:h-80 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#002847]/90 to-[#002847]/80 mix-blend-multiply"></div>
+          
           <img
             src="https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
             alt="Biblioteca de libros"
