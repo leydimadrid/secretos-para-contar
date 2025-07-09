@@ -64,7 +64,7 @@ const pagina_Audiolibros = () => {
 
         <div className="max-w-6xl mx-auto mb-4 mt-6">
           <p className="text-gray-600 text-sm">
-            Mostrando {data?.length ?? 0} resultados
+            Mostrando {data?.totalElements ?? 0} resultados
           </p>
         </div>
 
